@@ -32,9 +32,9 @@ const ActiveMenu = () => {
 }
 
 
-
 const App = () => {
 
+  /* The index page is set to show Login form */
   const [page, setPage] = useState(<Login />)
   const [activeMenu, setActiveMenu] = useState(null)
 

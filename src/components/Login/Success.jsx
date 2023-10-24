@@ -1,30 +1,40 @@
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 
 const DogDropdownList = ({dogs}) => {
+    console.log(dogs)
     return (
         dogs.map(dog => 
             <Dropdown.Item 
                 key={dog.id} 
+                id={dog.id}
                 href={`#/action-${dog.id}`} 
-                eventKey={dog}>
+                eventKey={dog.name}>
             {dog.name}
             </Dropdown.Item>
         )
     )
 }
 
-const DogDropdownButton = ({dogs, setUserDog}) => {
-    console.log(dogs)
+const DogDropdownButton = ({dogs, setUserDogId}) => {
+    const [title, setTitle] = useState("click to start")
+   
+    const handleSelect = (dogName, dog) => {
+        console.log(dogName)
+        console.log(dog.target.id)
+        
+        setTitle(dogName)
+        setUserDogId(dog.target.id)
+    }
     return (
         <DropdownButton 
             id="dog-dropdown-button" 
-            title="click to start"
-            onSelect={setUserDog}
+            title={title}
+            onSelect={handleSelect}
         >
             <DogDropdownList dogs={dogs} />
         </DropdownButton>
@@ -45,34 +55,30 @@ const Success = (props) => {
             <DogRegister />
         )
     } 
+
     /* Let the user choose from their dogs list. */
-
-    let dogs = null
-    console.log(`The number of ${props.user.userName}'s dog is: ${props.user.dogIds.length}`)
-
-    const dogPromises = props.user.dogIds.map(async dogId => {
-        const res = await axios
-            .get(`http://localhost:8080/dogs/${dogId}`)
-        return res.data
-    })
-    console.log(dogPromises)
-
-    dogs = Promise.all(dogPromises).then(
-        res => {
-            setTimeout((res) => {
-                console.log('hello', res)
-                return res.data}
-                , 3000)
-    
-        }
+    const [dogs, setDogs] = useState(null)
+    useEffect(() => {
+        const dogPromises = props.user.dogIds.map(async dogId => {
+            const res = await axios
+                .get(`http://localhost:8080/dogs/${dogId}`)
+            return res.data
+        })
+        console.log(dogPromises)
+        Promise.all(dogPromises).then(
+            res => {
+                console.log(res)
+                setDogs(res)
+            }
+        )
+    }, []
     )
-
-    console.log(dogs)
+    
     return (
         <>
             <h1>Hello, {props.user.userName}!</h1>
             <h2>Select one of your dogs.</h2>
-            <DogDropdownButton dogs={dogs} setUserDog={props.setUserDog} />
+            <DogDropdownButton dogs={dogs} setUserDogId={props.setUserDogId} />
             <button onClick={handleClick}>Start!</button>
         </>
     )

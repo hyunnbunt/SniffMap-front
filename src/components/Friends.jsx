@@ -27,19 +27,19 @@ const FriendsList = ({friendIds}) => {
 
 }
 
-const Friends = ({userDog}) => {
+const Friends = (props) => {
     const [friends, setFriends] = useState([])
     const [loading, setLoading] = useState(false)
    
-    console.log(userDog)
+    console.log(props.userDogId)
 
     if (!loading) {
         return (
         <>
             <h1>This is Friends Page.</h1>
-            <h2>Your dog : {userDog.name} </h2>
+            <h2>Your dog : {props.userDogId} </h2>
             <h2>Your friend :</h2>
-            <FriendsList friendIds={userDog.friendIds} />
+            {/* <FriendsList friendIds={} /> */}
         </>
         )
     } else {

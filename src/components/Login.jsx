@@ -87,7 +87,7 @@ const Login = (props) => {
             <Success 
                 user={props.user}
                 setUser={props.setUser} 
-                setUserDog={props.setUserDog} 
+                setUserDogId={props.setUserDogId} 
                 setCurrentMode={props.setCurrentMode} 
             />
     }

@@ -38,7 +38,8 @@ const App = () => {
     "Neighbors",
     "Events",
     "Friends",
-    "MyPage"
+    "MyPage",
+    "Loading"
   ]
 
 

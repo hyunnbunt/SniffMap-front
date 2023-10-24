@@ -8,24 +8,29 @@ const EventDetail = ({e}) => {
     )
 }
 
-const Events = () => {
-    const [e, setE] = useState([])
+const Events = (props) => {
+    const [participatingEvents, setParticipatingEvents] = useState([])
+    console.log(props.userDog.participatingEventIds)
 
     useEffect(() => {
-        axios
-            .get('http://localhost:8080/events')
-            .then(res => {
-                setE(res.data)
-            })
+        const eventPromises = props.userDog.participatingEventIds.map(
+            participatingEventId => 
+            axios
+                .get(`http://localhost:8080/events/${participatingEventId}`)
+                .then(res => {
+                    console.log(res.data)
+                    return res.data
+                })
+        )
+        Promise.all(eventPromises).then(res => setParticipatingEvents(res))
     }, [])
 
     return (
         <>
             <h1>Events</h1>
-            {e.map(eve => <EventDetail  key={eve.id} e={eve} />)}
+            {participatingEvents.map(eve => <EventDetail  key={eve.id} e={eve} />)}
         </>
     )
-
 }
 
 export default Events

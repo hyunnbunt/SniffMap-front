@@ -25,23 +25,19 @@ const DogRegister = () => {
     )
 }
 
-
-
-const Loading = () => {
-    return <h1>Loading...</h1>
-}
-
 const Login = (props) => {
 
     const [loginInput, setLoginInput] = useState({ email : "", password : ""})
     const [loggedIn, setLoggedIn] = useState(false)
 
+    let msg = ""
+    if (props.loggedOut) {
+        msg = "You're logged out"
+    }
 
     /* A function that requests to the login API with axios and set the logged in user. */
     const requestLogin = async (loginInfo, setUser) => {
-
         const loginURL = 'http://localhost:8080/users/login'
-
         const res = await axios.post(loginURL, loginInfo)
         if (res.status === 200) {
             setLoggedIn(true)
@@ -81,13 +77,14 @@ const Login = (props) => {
                 handleLoginSubmit={handleLoginSubmit} 
                 handleInputChange={handleLoginInputChange} 
                 setCurrentMode={props.setCurrentMode}
+                msg={msg}
             />
     } else {
         window = 
             <Success 
                 user={props.user}
                 setUser={props.setUser} 
-                setUserDogId={props.setUserDogId} 
+                setUserDog={props.setUserDog} 
                 setCurrentMode={props.setCurrentMode} 
             />
     }

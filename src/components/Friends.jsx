@@ -2,51 +2,37 @@ import React from 'react'
 import axios from 'axios'
 import {useState, useEffect} from 'react'
 
-const FriendsList = ({friendIds}) => {
-
-    const [loading, setLoading] = useState(false)
-
-    const friendsName =
-    friendIds.map(friendId => {
-        setLoading(true)
-        axios
-        .get(`http://localhost:8080/dogs/${friendId}`)
-        .then(res => {
-            <h2>{res.data.name}</h2>
-            setLoading(false)
-        })
-    })
-    console.log(friendsName)
-    if (loading) {
-        return <>loading...</>
-    } else {
-        return (
-            <>friends</>
-        )
-    }
-
+const FriendsList = ({friends}) => {
+    return friends.map(friend => <h2 key={friend.id}>{friend.name}({friend.age} years old)</h2>)
 }
 
 const Friends = (props) => {
-    const [friends, setFriends] = useState([])
-    const [loading, setLoading] = useState(false)
-   
-    console.log(props.userDogId)
+    const [friends, setFriends] = useState(null)
 
-    if (!loading) {
-        return (
-        <>
-            <h1>This is Friends Page.</h1>
-            <h2>Your dog : {props.userDogId} </h2>
-            <h2>Your friend :</h2>
-            {/* <FriendsList friendIds={} /> */}
-        </>
+    useEffect(() => {
+        const friendsPromises = props.userDog.friendIds.map(friendId => 
+            axios.get(`http://localhost:8080/dogs/${friendId}`).then(res => res.data)
         )
-    } else {
+        Promise
+            .all(friendsPromises)
+            .then(res => {
+                console.log(res)
+                setFriends(res)
+            })
+    }, [])
+
+    if (friends === null) {
         return (
             <>Loading...</>
         )
     }
+    return (
+    <>
+        <h1>This is Friends Page.</h1>
+        <h2>{props.userDog.name}'s friends :</h2>
+        <FriendsList friends={friends} />
+    </>
+    )
 }
 
 export default Friends

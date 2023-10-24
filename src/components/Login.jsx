@@ -1,87 +1,101 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import Success from './Login/Success'
 
-const LoginForm = ({user, handleLoginSubmit, handleInputChange}) => {
+
+const LoginForm = (props) => {
     return (
         <>
             <h1>Login</h1>
-            <form onSubmit={handleLoginSubmit}>
-                <input name='email' type='email' value={user.email} onChange={handleInputChange}  />
+            <form onSubmit={props.handleLoginSubmit}>
+                <input name='email' type='email' value={props.loginInput.email} onChange={props.handleInputChange}  />
                 <br />
-                <input name='password' type='password' value={user.password} onChange={handleInputChange}  />
+                <input name='password' type='password' value={props.loginInput.password} onChange={props.handleInputChange}  />
                 <br />
                 <button type="submit">log in</button>
             </form>
+            <h2>{props.msg}</h2>
         </>
     )
 }
 
-const Success = ({user}) => {
+const DogRegister = () => {
     return (
-        <h1>Hello, {user.userName}!</h1>
+        <h1>Register your dog.</h1>
     )
 }
 
-const Fail = () => {
-    return <h1>Try again.</h1>
+
+
+const Loading = () => {
+    return <h1>Loading...</h1>
 }
 
-const Login = () => {
+const Login = (props) => {
+
+    const [loginInput, setLoginInput] = useState({ email : "", password : ""})
+    const [loggedIn, setLoggedIn] = useState(false)
 
 
-    const handleLoginSubmit = (e) => {
-        e.preventDefault()
-        setLoading(true)
-        axios
-            .post('http://localhost:8080/users/login', 
-                {
-                    userEmail : userInput.email,
-                    userPw : userInput.password
-                }
-            )
-            .then(res => {
-                if (res.status === 200) {
-                    setLoading(false)
-                    setLoginInfo(res.data)
-                    setFormOrGreeting(<Success user={res.data}/>)
-                } else {
-                    setFormOrGreeting(<Fail />)
-                }
-            })
+    /* A function that requests to the login API with axios and set the logged in user. */
+    const requestLogin = async (loginInfo, setUser) => {
+
+        const loginURL = 'http://localhost:8080/users/login'
+
+        const res = await axios.post(loginURL, loginInfo)
+        if (res.status === 200) {
+            setLoggedIn(true)
+            setUser(res.data)
+        }
     }
 
-    const handleInputChange = (e) => {
+    /* A function that runs when the user clicks the submit button. */
+    const handleLoginSubmit = (e) => {
+        // Block the page to get reloaded.
+        e.preventDefault()
+        const loginInfo =                 
+            {
+                userEmail : loginInput.email,
+                userPw : loginInput.password
+            }
+        requestLogin(loginInfo, props.setUser)
+    }
+
+    /* A function that runs when the login input changes. 
+        The login input contains email and password. */
+
+    const handleLoginInputChange = (e) => {
         console.log(e.target.value)
-        serUserInput({
-            ...userInput,
+        setLoginInput({
+            ...loginInput,
             [e.target.name] : e.target.value
         })
     }
 
-    const [userInput, serUserInput] = useState({ email : "", password : ""})
-    const [loginInfo, setLoginInfo] = useState(null)
-    const [loading, setLoading] = useState(false)
-
-    const [formOrGreeting, setFormOrGreeting] = 
-        useState(
+    /* Changes the login page following the result of the login request. */
+    let window = null
+    if (!loggedIn) {
+        window = 
             <LoginForm 
-                user={userInput} 
+                loginInput={loginInput} 
                 handleLoginSubmit={handleLoginSubmit} 
-                handleInputChange={handleInputChange} 
+                handleInputChange={handleLoginInputChange} 
+                setCurrentMode={props.setCurrentMode}
             />
-        )
-
-
+    } else {
+        window = 
+            <Success 
+                user={props.user}
+                setUser={props.setUser} 
+                setUserDog={props.setUserDog} 
+                setCurrentMode={props.setCurrentMode} 
+            />
+    }
     return (
         <>
-        { loading 
-            ? <h1>Loading...</h1> 
-            : formOrGreeting
-        }
-
+            {window}
         </>
     )
-
 }
 
 

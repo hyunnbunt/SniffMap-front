@@ -4,15 +4,8 @@ import Menu from './components/Menu'
 import NavBar from './components/NavBar'
 import Neighbors from './components/Neighbors'
 import Events from './components/Events'
+import Friends from './components/Friends'
 
-
-const Friends = () => {
-  return (
-    <>
-      <h1>This is Friends Page.</h1>
-    </>
-  )
-}
 
 const MyPage = () => {
   return (
@@ -34,10 +27,13 @@ const ActiveMenu = () => {
 
 const App = () => {
 
+  /* Don't put component in state! 복잡해짐 */
   /* The index page is set to show Login form */
-  const [page, setPage] = useState(<Login />)
-  const [activeMenu, setActiveMenu] = useState(null)
 
+  const [currentMode, setCurrentMode] = useState('Login')
+  const [user, setUser] = useState(null)
+  const [userDog, setUserDog] = useState(null)
+  
   const mode = [
     "Neighbors",
     "Events",
@@ -45,33 +41,38 @@ const App = () => {
     "MyPage"
   ]
 
-  const handleMenuClick = () => {
-    console.log('menu button clicked')
-    setActiveMenu(<ActiveMenu />)
-  }
-  
 
-  /* This function changes the page when the button clicked. */
-  const handleClicks = (n) => {
-    if (n === "Neighbors") {
-      setPage(<Neighbors />)
-    }
-    if (n === 'Events') {
-      setPage(<Events />)
-    }
-    if (n === 'Friends') {
-      setPage(<Friends />)
-    }
-    if (n === 'MyPage') {
-      setPage(<MyPage />)
-    } 
+  /* This function changes the currentMode string value when the button clicked. */
+  const handleNavbarClicks = (n) => {
+    setCurrentMode(n)
+  }
+
+  let page = null
+
+  /* 
+    The page showing is changing depend on what the currentMode value is. 
+    Each component can set the page showing and the user who's logged in now and the dog chosen.
+  */
+  if (currentMode === "Login") {
+    page = <Login setCurrentMode = {setCurrentMode} user={user} setUser={setUser} setUserDog={setUserDog} />
+  }
+  if (currentMode === "Neighbors") {
+    page = <Neighbors setCurrentMode = {setCurrentMode} userDog={userDog} setUserDog={setUserDog} />
+  }
+  if (currentMode === 'Events') {
+    page = <Events setCurrentMode = {setCurrentMode} userDog={userDog} setUserDog={setUserDog} />
+  }
+  if (currentMode === 'Friends') {
+    page = <Friends setCurrentMode = {setCurrentMode} userDog={userDog} setUserDog={setUserDog} />
+  }
+  if (currentMode === 'MyPage') {
+    page = <MyPage setCurrentMode = {setCurrentMode} userDog={userDog} user={user} setUserDog={setUserDog} />
   }
 
   return (
     <>
-      <Menu onClick={handleMenuClick}/>
-      <NavBar handleClicks={handleClicks} mode={mode}/>
-      {page}
+      <NavBar handleClicks={handleNavbarClicks} mode={mode} />
+      { page }
     </>
   )
 }

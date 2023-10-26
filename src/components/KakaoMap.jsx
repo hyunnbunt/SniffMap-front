@@ -18,14 +18,15 @@ const KakaoMap = ({walkLocationIds}) => {
         return res.data
       })
       .then(res => {
-
         const container = document.getElementById('map')
         const options = { 
           center: new kakao.maps.LatLng(res.latitude, res.longitude),
           level: 3
         }
         const kakaoMap = new kakao.maps.Map(container, options)
-        setMap(kakaoMap)
+        const markerPosition  = new kakao.maps.LatLng(res.latitude, res.longitude)
+        const marker = new kakao.maps.Marker({position: markerPosition})
+        marker.setMap(kakaoMap)
       })
     
   }, [])

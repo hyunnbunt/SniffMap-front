@@ -27,30 +27,10 @@ const Dogs = () => {
 const Neighbors = (props) => {
   const [location, setLocation] = useState(null)
   const [locationURL, setLocationURL] = useState(null)
-
-
-
-  // useEffect(() => {
-  //   axios.get(`http://localhost:8080/locations/${props.userDog.walkLocationIds[0]}`)
-  //   .then(
-  //     res => {
-  //       console.log(res.data)
-  //       setLocation({lat: res.data.latitude, lon: res.data.longitude})
-  //     }
-  //   )
-  //   .then(
-  //     setLocationURL(`https://map.kakao.com/link/map/${location.lat},${location.lon}`)
-  //   )
-  // }, [])
-
-  // if (locationURL === null) {
-  //   return (
-  //     <>Loading...</>
-  //   )
-  // }
+  console.log(props)
   return (
     <>
-      <KakaoMap walkLocationIds={props.userDog.walkLocationIds}/>
+      <KakaoMap friendIds={props.userDog.friendIds} userDog={props.userDog}/>
     </>
   )
 }

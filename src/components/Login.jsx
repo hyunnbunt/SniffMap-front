@@ -85,6 +85,7 @@ const Login = (props) => {
                 user={props.user}
                 setUser={props.setUser} 
                 setUserDog={props.setUserDog} 
+                setUserDogId={props.setUserDogId}
                 setCurrentMode={props.setCurrentMode} 
             />
     }

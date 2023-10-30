@@ -26,6 +26,7 @@ const App = () => {
   const [currentMode, setCurrentMode] = useState('Login')
   const [user, setUser] = useState(null)
   const [userDog, setUserDog] = useState(null)
+  const [userDogId, setUserDogId] = useState(null)
   
   const mode = [
     "Neighbors",
@@ -48,16 +49,16 @@ const App = () => {
     Each component can set the page showing and the user who's logged in now and the dog chosen.
   */
   if (currentMode === "Login") {
-    page = <Login loggedOut={loggedOut} setCurrentMode = {setCurrentMode} user={user} setUser={setUser} setUserDog={setUserDog} />
+    page = <Login loggedOut={loggedOut} setCurrentMode = {setCurrentMode} user={user} setUser={setUser} setUserDogId={setUserDogId} setUserDog={setUserDog} />
   }
   if (currentMode === "Neighbors") {
-    page = <Neighbors setCurrentMode = {setCurrentMode} userDog={userDog} />
+    page = <Neighbors setCurrentMode = {setCurrentMode} userDogId={userDogId} />
   }
   if (currentMode === 'Events') {
     page = <Events setCurrentMode = {setCurrentMode} userDog={userDog} />
   }
   if (currentMode === 'Friends') {
-    page = <Friends setCurrentMode = {setCurrentMode} userDog={userDog} />
+    page = <Friends currentMode={currentMode} setCurrentMode = {setCurrentMode} userDog={userDog} userDogId={userDogId}/>
   }
   if (currentMode === 'MyPage') {
     page = <MyPage setLoggedOut={setLoggedOut} setCurrentMode = {setCurrentMode} user={user} userDog={userDog} setUser={setUser} setUserDog={setUserDog} />

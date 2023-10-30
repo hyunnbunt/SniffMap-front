@@ -8,18 +8,31 @@ const FriendsList = ({friends}) => {
 
 const Friends = (props) => {
     const [friends, setFriends] = useState(null)
+    const [userDog, setUserDog] = useState(null)
+
+    const getUserDog = async (dogId) => {
+        const res = await axios.get(`http://localhost:8080/dogs/${dogId}`)
+        setUserDog(res.data)
+        return res.data
+    }
 
     useEffect(() => {
-        const friendsPromises = props.userDog.friendIds.map(friendId => 
+        let dog = null
+        getUserDog(props.userDogId).then(res => {
+            dog = res
+            console.log(dog)
+            const friendsPromises = dog.friendIds.map(friendId => 
             axios.get(`http://localhost:8080/dogs/${friendId}`).then(res => res.data)
         )
         Promise
-            .all(friendsPromises)
-            .then(res => {
-                console.log(res)
-                setFriends(res)
-            })
-    }, [])
+        .all(friendsPromises)
+        .then(res => {
+            console.log(res)
+            setFriends(res)
+        })
+        })
+       
+    }, [props.currentMode])
 
     if (friends === null) {
         return (
@@ -29,7 +42,7 @@ const Friends = (props) => {
     return (
     <>
         <h1>This is Friends Page.</h1>
-        <h2>{props.userDog.name}'s friends :</h2>
+        <h2>{userDog.name}'s friends :</h2>
         <FriendsList friends={friends} />
     </>
     )

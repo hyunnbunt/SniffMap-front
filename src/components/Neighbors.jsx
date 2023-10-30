@@ -30,7 +30,7 @@ const Neighbors = (props) => {
   console.log(props)
   return (
     <>
-      <KakaoMap friendIds={props.userDog.friendIds} userDog={props.userDog}/>
+      <KakaoMap friendIds={props.userDog.friendIds} userDogId={props.userDogId}/>
     </>
   )
 }

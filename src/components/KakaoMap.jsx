@@ -2,16 +2,15 @@ import React, {useEffect, useState, useRef} from 'react'
 import axios from 'axios'
 const { kakao } = window
 
-const KakaoMap = ({friendIds, userDogId}) => {
+const KakaoMap = ({friendIds, userDog, setUserDog}) => {
   // const [kakaoMap, setKakaoMap] = useState(null)
   const [setBounds, setSetBounds] = useState(null)
-  const [userDog, setUserDog] = useState(null)
 
   const baseURL = 'http://localhost:8080/'
 
   const getMyLatLng = async () => {
-    const response = await axios.get(baseURL+`locations/${userDog.walkLocationIds[0]}`)
-    return {title: userDog.name, lat: response.data.latitude, lng: response.data.longitude}
+    const response = await axios.get(baseURL+`locations/${userDog.dog.walkLocationIds[0]}`)
+    return {title: userDog.dog.name, lat: response.data.latitude, lng: response.data.longitude}
   }
 
   const getFriendDogsLatLng = async () => {
@@ -34,17 +33,19 @@ const KakaoMap = ({friendIds, userDogId}) => {
     return [my, ...friends]
   }
 
-  const getUserDog = async (dogId) => {
+  const promiseSetUserDog = async (dogId) => {
     const res = await axios.get(`http://localhost:8080/dogs/${dogId}`)
-    setUserDog(res.data)
+    setUserDog({updated:false, dog:res.data})
     return res.data
 }
 
-useEffect(() => {
-  getUserDog(props.userDogId)
-}, [])
-
   useEffect(() => {
+
+    if (userDog.updated) {
+      const dog = promiseSetUserDog(userDog.id)
+    } else {
+      const dog = null
+    }
     
     getMarkerPoisitons().then(res => {
       const container = document.getElementById('map')

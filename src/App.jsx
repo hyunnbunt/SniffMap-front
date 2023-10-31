@@ -17,7 +17,6 @@ const ActiveMenu = () => {
   )
 }
 
-
 const App = () => {
 
   /* Don't put component in state! 복잡해짐 */
@@ -26,7 +25,7 @@ const App = () => {
   const [currentMode, setCurrentMode] = useState('Login')
   const [user, setUser] = useState(null)
   const [userDog, setUserDog] = useState(null)
-  const [userDogId, setUserDogId] = useState(null)
+  // const [updated, setUpdated] = useState(false)
   
   const mode = [
     "Neighbors",
@@ -34,7 +33,6 @@ const App = () => {
     "Friends",
     "MyPage"
   ]
-
 
   /* This function changes the currentMode string value when the button clicked. */
   const handleNavbarClicks = (n) => {
@@ -49,16 +47,16 @@ const App = () => {
     Each component can set the page showing and the user who's logged in now and the dog chosen.
   */
   if (currentMode === "Login") {
-    page = <Login loggedOut={loggedOut} setCurrentMode = {setCurrentMode} user={user} setUser={setUser} setUserDogId={setUserDogId} setUserDog={setUserDog} />
+    page = <Login loggedOut={loggedOut} setCurrentMode = {setCurrentMode} user={user} setUser={setUser} setUserDog={setUserDog} />
   }
   if (currentMode === "Neighbors") {
-    page = <Neighbors setCurrentMode = {setCurrentMode} userDogId={userDogId} />
+    page = <Neighbors setCurrentMode = {setCurrentMode} userDog={userDog} setUserDog={setUserDog} />
   }
   if (currentMode === 'Events') {
     page = <Events setCurrentMode = {setCurrentMode} userDog={userDog} />
   }
   if (currentMode === 'Friends') {
-    page = <Friends currentMode={currentMode} setCurrentMode = {setCurrentMode} userDog={userDog} userDogId={userDogId}/>
+    page = <Friends currentMode={currentMode} setCurrentMode = {setCurrentMode} userDog={userDog} setUserDog={setUserDog} />
   }
   if (currentMode === 'MyPage') {
     page = <MyPage setLoggedOut={setLoggedOut} setCurrentMode = {setCurrentMode} user={user} userDog={userDog} setUser={setUser} setUserDog={setUserDog} />

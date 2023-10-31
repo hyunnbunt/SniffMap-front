@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 import Login from './components/Login'
 import Menu from './components/Menu'
 import NavBar from './components/NavBar'
@@ -34,9 +35,23 @@ const App = () => {
     "MyPage"
   ]
 
+  const baseURL = 'http://localhost:8080/'
+
   /* This function changes the currentMode string value when the button clicked. */
   const handleNavbarClicks = (n) => {
     setCurrentMode(n)
+  }
+
+  const updateUserDog = async () => {
+    if (userDog.updated) {
+      const res = await axios.get(baseURL + `dogs/${userDog.dog.id}`)
+      if (res.status === 200) {
+        const updatedDog = {updated : false, dog : res.data}
+        setUserDog(updatedDog)
+        return updatedDog
+      }
+    }
+    return userDog
   }
 
   let page = null
@@ -56,7 +71,7 @@ const App = () => {
     page = <Events setCurrentMode = {setCurrentMode} userDog={userDog} />
   }
   if (currentMode === 'Friends') {
-    page = <Friends currentMode={currentMode} setCurrentMode = {setCurrentMode} userDog={userDog} setUserDog={setUserDog} />
+    page = <Friends currentMode={currentMode} updateUserDog={updateUserDog} setCurrentMode = {setCurrentMode} userDog={userDog} setUserDog={setUserDog} />
   }
   if (currentMode === 'MyPage') {
     page = <MyPage setLoggedOut={setLoggedOut} setCurrentMode = {setCurrentMode} user={user} userDog={userDog} setUser={setUser} setUserDog={setUserDog} />

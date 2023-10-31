@@ -3,15 +3,6 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import FriendDetail from './Friends/FriendDetail'
 
-const FriendsList = ({ friends, handleClick }) => {
-    return friends.map(friend =>
-        <>
-            <h2 key={friend.id}>{friend.name}({friend.age} years old)</h2>
-            <button key={friend.name} onClick={handleClick} friendDetail={friend}>detail</button>
-        </>
-    )
-}
-
 const Friends = (props) => {
     const [friends, setFriends] = useState(null)
     const [friendDetail, setFriendDetail] = useState("-----friend detail-----")
@@ -22,19 +13,13 @@ const Friends = (props) => {
         return res.data
     }
 
-    const friendDetailUpdaterCreator = (detail) => {
-        return () => {
-            setFriendDetail(detail)
-        }
-    }
-
-
     useEffect(() => {
         let dog = null
-        promiseSetUserDog(props.userDog.dog.id).then(res => {
+        props.updateUserDog(props.userDog.dog.id).then(res => {
             dog = res
             console.log(dog)
-            const friendsPromises = dog.friendIds.map(friendId =>
+            
+            const friendsPromises = dog.dog.friendIds.map(friendId =>
                 axios.get(`http://localhost:8080/dogs/${friendId}`).then(res => res.data)
             )
             Promise
@@ -58,8 +43,8 @@ const Friends = (props) => {
             <h2>{props.userDog.dog.name}'s friends :</h2>
             {friends.map(friend =>
                 <>
-                    <h2 key={friend.id}>{friend.name}({friend.age} years old)</h2>
-                    <button key={friend.name} onClick={friendDetailUpdaterCreator(friend)}>detail</button>
+                    <h3 key={friend.id}>{friend.name}</h3>
+                    <button key={friend.name} onClick={() => setFriendDetail(friend)}>detail</button>
                 </>
             )}
             <h2>{JSON.stringify(friendDetail)}</h2>

@@ -20,8 +20,9 @@ const DogDropdownList = ({dogs}) => {
     )
 }
 
-const DogDropdownButton = ({dogs, setUserDog}) => {
+const DogDropdownButton = ({dogs, updateUserDog}) => {
     const [title, setTitle] = useState("click to start")
+    let dog = null
    
     const handleSelect = (dogName, dog) => {
         console.log(dogName)
@@ -29,7 +30,9 @@ const DogDropdownButton = ({dogs, setUserDog}) => {
         setTitle(dogName)
         axios.get(`http://localhost:8080/dogs/${dog.target.id}`)
         .then(
-            res => setUserDog({updated: true, dog : res.data})
+            res => {
+                dog = {updated: true, dog : res.data}
+                updateUserDog(dog)}
         )
     }
     return (
@@ -37,6 +40,7 @@ const DogDropdownButton = ({dogs, setUserDog}) => {
             id="dog-dropdown-button" 
             title={title}
             onSelect={handleSelect}
+            value={dog}
         >
             <DogDropdownList dogs={dogs} />
         </DropdownButton>
@@ -81,8 +85,8 @@ const Success = (props) => {
         <>
             <h1>Hello, {props.user.userName}!</h1>
             <h2>Select one of your dogs.</h2>
-            <DogDropdownButton dogs={dogs} setUserDog={props.setUserDog} />
-            <button onClick={handleClick}>Start!</button>
+            <DogDropdownButton dogs={dogs} updateUserDog={props.updateUserDog} setUserDog={props.setUserDog} />
+            <button onClick={() => handleClick()}>Start!</button>
         </>
     )
 

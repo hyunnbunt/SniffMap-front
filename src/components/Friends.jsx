@@ -15,6 +15,7 @@ const Friends = (props) => {
 
     useEffect(() => {
         let dog = null
+        console.log(props)
         props.updateUserDog(props.userDog.dog.id).then(res => {
             dog = res
             console.log(dog)

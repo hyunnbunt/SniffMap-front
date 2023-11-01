@@ -46,7 +46,7 @@ const Login = (props) => {
             <LoginForm
                 loginInput={loginInput}
                 handleLoginSubmit={handleLoginSubmit}
-                handleInputChange={handleLoginInputChange}
+                handleLoginInputChange={handleLoginInputChange}
                 setCurrentMode={props.setCurrentMode}
                 msg={msg}
             />

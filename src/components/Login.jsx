@@ -7,18 +7,16 @@ const Login = (props) => {
 
     const [loginInput, setLoginInput] = useState({ email: "", password: "" })
     const [msg, setMsg] = useState("")
-    
-    let window = null
-    
+
     /* A function that runs when the login input changes. 
         The login input contains email and password. */
-        const handleLoginInputChange = (e) => {
-            console.log(e.target.value)
-            setLoginInput({
-                ...loginInput,
-                [e.target.name]: e.target.value
-            })
-        }
+    const handleLoginInputChange = (e) => {
+        console.log(e.target.value)
+        setLoginInput({
+            ...loginInput,
+            [e.target.name]: e.target.value
+        })
+    }
 
     /* A function that runs when the user clicks the submit button. */
     const handleLoginSubmit = (e) => {
@@ -44,11 +42,7 @@ const Login = (props) => {
     }
 
     if (!props.loggedIn) {
-        setMsg("You're logged out")
-    }
-
-    if (!props.loggedIn) {
-        window =
+        return (
             <LoginForm
                 loginInput={loginInput}
                 handleLoginSubmit={handleLoginSubmit}
@@ -56,22 +50,16 @@ const Login = (props) => {
                 setCurrentMode={props.setCurrentMode}
                 msg={msg}
             />
+        )
     } else {
-        window =
+        return (
             <Success
                 user={props.user}
-                setUser={props.setUser}
-                setUserDog={props.setUserDog}
                 updateUserDog={props.updateUserDog}
                 setCurrentMode={props.setCurrentMode}
             />
+        )
     }
-    return (
-        <>
-            {window}
-        </>
-    )
 }
-
 
 export default Login

@@ -4,36 +4,21 @@ import { useState, useEffect } from 'react'
 import FriendDetail from './Friends/FriendDetail'
 
 const Friends = (props) => {
-    const [friends, setFriends] = useState(null)
-    const [friendDetail, setFriendDetail] = useState("-----friend detail-----")
+    const [friendData, setFriendData] = useState(null)
 
-    const promiseSetUserDog = async (dogId) => {
-        const res = await axios.get(`http://localhost:8080/dogs/${dogId}`)
-        props.setUserDog({ updated: false, dog: res.data })
-        return res.data
+    const promiseSetFriendsData = async (friendIds) => {
+        const res = await Promise.all(friendIds.map(friendId =>
+            axios.get(`http://localhost:8080/dogs/${friendId}`)
+        ))
+        props.setUserDogFriends(res.map(res => res.data))
     }
 
     useEffect(() => {
-        let dog = null
-        console.log(props)
-        props.updateUserDog(props.userDog.dog.id).then(res => {
-            dog = res
-            console.log(dog)
-            
-            const friendsPromises = dog.dog.friendIds.map(friendId =>
-                axios.get(`http://localhost:8080/dogs/${friendId}`).then(res => res.data)
-            )
-            Promise
-                .all(friendsPromises)
-                .then(res => {
-                    console.log(res)
-                    setFriends(res)
-                })
-        })
+        props.updateUserDog()
+            .then(res => {promiseSetFriendsData(res.dog.friendIds) })
+    }, [])
 
-    }, [props.currentMode])
-
-    if (friends === null || props.userDog.updated) {
+    if (props.userDogFriends === null) {
         return (
             <>Loading...</>
         )
@@ -42,13 +27,12 @@ const Friends = (props) => {
         <>
             <h1>This is Friends Page.</h1>
             <h2>{props.userDog.dog.name}'s friends :</h2>
-            {friends.map(friend =>
-                <>
-                    <h3 key={friend.id}>{friend.name}</h3>
-                    <button key={friend.name} onClick={() => setFriendDetail(friend)}>detail</button>
-                </>
+            {props.userDogFriends.map(friend =>
+                <h3 key={friend.id}>{friend.name}
+                    <button key={friend.name} onClick={() => setFriendData(friend)}>detail</button>
+                </h3>
             )}
-            <h2>{JSON.stringify(friendDetail)}</h2>
+            <FriendDetail friend={friendData} />
         </>
     )
 }

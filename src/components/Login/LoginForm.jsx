@@ -7,7 +7,7 @@ const LoginForm = (props) => {
             <form onSubmit={props.handleLoginSubmit}>
                 <input name='email' type='email' value={props.loginInput.email} onChange={props.handleLoginInputChange}  />
                 <br />
-                <input name='password' type='password' value={props.loginInput.password} onChange={props.handleInputChange}  />
+                <input name='password' type='password' value={props.loginInput.password} onChange={props.handleLoginInputChange}  />
                 <br />
                 <button type="submit">log in</button>
             </form>

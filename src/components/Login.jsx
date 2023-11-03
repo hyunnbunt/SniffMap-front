@@ -55,8 +55,11 @@ const Login = (props) => {
         return (
             <Success
                 user={props.user}
-                updateUserDog={props.updateUserDog}
+                setUser={props.setUser}
+                setUserDog={props.setUserDog}
                 setCurrentMode={props.setCurrentMode}
+                getPromiseDogList={props.getPromiseDogList}
+                setUserDogList={props.setUserDogList}
             />
         )
     }

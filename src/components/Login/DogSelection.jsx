@@ -9,41 +9,30 @@ const DogSelection = (props) => {
 
     const [title, setTitle] = useState("click to start")
     const [selectedDog, setSelectedDog] = useState(null)
-    let dog = null
 
-    const handleDogSelect = (dogName, dog) => {
-        console.log(dogName)
-        console.log(dog.target.id)
-        setTitle(dogName)
-
-        axios.get(`http://localhost:8080/dogs/${dog.target.id}`)
-            .then(
-                res => {
-                    dog = { updated: true, dog: res.data }
-                    setSelectedDog(dog)
-                    props.updateUserDog(dog)
-                }
-            )
+    const handleDogSelect = (eventKey) => {
+        setSelectedDog(props.userDogList[eventKey])
+        setTitle(props.userDogList[eventKey].name)
     }
 
     /* If the user selects a dog, present 'Friends' tab. */
     const handleSelectionSubmit = (e) => {
         e.preventDefault()
+        props.setUserDog({updated : true, dog: selectedDog})
         props.setCurrentMode("Friends")
     }
 
     return (
         <>
             <form onSubmit={handleSelectionSubmit}>
-                <DropdownButton id="dog-dropdown-button" title={title} onSelect={() => handleDogSelect(dog.name, dog)} value={dog}>
+                <DropdownButton id="dog-dropdown-button" title={title} onSelect={handleDogSelect}>
                     {
-                        props.dogsList.map(dog =>
-                            <Dropdown.Item key={dog.id} id={dog.id} href={`#/action-${dog.id}`} eventKey={dog.name}>
+                        props.dogsList.map((dog, index) =>
+                            <Dropdown.Item key={dog.id} href={`#/action-${dog.id}`} eventKey={index}>
                                 {dog.name}
                             </Dropdown.Item>
                         )
                     }
-                    <DogDropdownList dogsList={props.dogsList} />
                 </DropdownButton>
                 <button type="submit">Start!</button>
             </form>

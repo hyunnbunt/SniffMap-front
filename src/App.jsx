@@ -13,7 +13,9 @@ const App = () => {
 
   const [currentMode, setCurrentMode] = useState('Login')
   const [user, setUser] = useState(null)
+  const [userDogList, setUserDogList] = useState(null)
   const [userDog, setUserDog] = useState({updated : false, dog : null})
+  const [userDogFriends, setUserDogFriends] = useState(null)
   const [loggedIn, setLoggedIn] = useState(false)
   
   let page = null
@@ -43,25 +45,32 @@ const App = () => {
     }
     return userDog
   }
+  
+  const getPromiseDogList = async () => {
+    const res = await Promise.all(user.dogIds.map(dogId =>
+        axios.get(`http://localhost:8080/dogs/${dogId}`)
+    ))
+    return res
+}
 
   /* 
     The page showing is changing depend on what the currentMode value is. 
     Each component can set the page showing and the user who's logged in now and the dog chosen.
   */
   if (currentMode === "Login") {
-    page = <Login baseURL={baseURL} loggedIn={loggedIn} setLoggedIn={setLoggedIn} setCurrentMode = {setCurrentMode} setUser={setUser} userDog={userDog} updateUserDog={updateUserDog} />
+    page = <Login baseURL={baseURL} getPromiseDogList={getPromiseDogList} userDogList={userDogList} setUserDogList={setUserDogList} loggedIn={loggedIn} setLoggedIn={setLoggedIn} setCurrentMode = {setCurrentMode} user={user} setUser={setUser} userDog={userDog} setUserDog={setUserDog}/>
   }
   if (currentMode === "Neighbors") {
-    page = <Neighbors setCurrentMode = {setCurrentMode} userDog={userDog} updateUserDog={updateUserDog} />
+    page = <Neighbors setCurrentMode = {setCurrentMode} userDog={userDog} userDogFriends={userDogFriends} updateUserDog={updateUserDog} />
   }
   if (currentMode === 'Events') {
     page = <Events setCurrentMode = {setCurrentMode} userDog={userDog} />
   }
   if (currentMode === 'Friends') {
-    page = <Friends currentMode={currentMode} updateUserDog={updateUserDog} setCurrentMode = {setCurrentMode} userDog={userDog} setUserDog={setUserDog} />
+    page = <Friends currentMode={currentMode} updateUserDog={updateUserDog} userDogFriends={userDogFriends} setUserDogFriends={setUserDogFriends} setCurrentMode = {setCurrentMode} userDog={userDog} setUserDog={setUserDog} />
   }
   if (currentMode === 'MyPage') {
-    page = <MyPage setLoggedOut={setLoggedOut} setCurrentMode = {setCurrentMode} user={user} userDog={userDog} setUser={setUser} setUserDog={setUserDog} />
+    page = <MyPage setLoggedIn={setLoggedIn} getPromiseDogList={getPromiseDogList} userDogList={userDogList} setUserDogList={setUserDogList} setCurrentMode = {setCurrentMode} user={user} userDog={userDog} setUser={setUser} setUserDog={setUserDog} />
   }
 
   return (

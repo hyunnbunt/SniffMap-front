@@ -1,22 +1,18 @@
 import React from 'react'
 import { useEffect } from 'react'
-import KakaoMap from './KakaoMap'
+import FriendLocationKakaoMap from './KakaoMap/FriendLocationKakaoMap'
+import NeighborDogsKakaoMap from './KakaoMap/NeighborDogsKakaoMap'
 
 const Neighbors = (props) => {
 
-  useEffect(() => {
-    props.updateUserDog()
-  })
-
-  if (!props.userDog.updated) {
-    return (
-      <>Loading...</>
-    )
-  }
+  const dog = props.user.dogs[props.selectedDogIndex]
   
   return (
     <>
-      <KakaoMap userDogFriends={props.userDogFriends} userDog={props.userDog} updateUserDog={props.updateUserDog} />
+      <h1>Your dog's friends' walk here:</h1>
+      <FriendLocationKakaoMap dog={dog} />
+      <h1>Your neighbor dogs walk here:</h1>
+      <NeighborDogsKakaoMap dog={dog} />
     </>
   )
 }

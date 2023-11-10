@@ -6,6 +6,7 @@ import Neighbors from './components/Neighbors'
 import Events from './components/Events'
 import Friends from './components/Friends'
 import MyPage from './components/MyPage'
+import Update from './components/Update'
 
 const App = () => {
 
@@ -13,10 +14,8 @@ const App = () => {
 
   const [currentMode, setCurrentMode] = useState('Login')
   const [user, setUser] = useState(null)
-  const [userDogList, setUserDogList] = useState(null)
-  const [userDog, setUserDog] = useState({updated : false, dog : null})
-  const [userDogFriends, setUserDogFriends] = useState(null)
-  const [loggedIn, setLoggedIn] = useState(false)
+  const [selectedDogIndex, setSelectedDogIndex] = useState(null)
+  const [loggedOut, setLoggedOut] = useState(false)
   
   let page = null
   const mode = [
@@ -33,44 +32,51 @@ const App = () => {
     setCurrentMode(n)
   }
 
-  const updateUserDog = async () => {
-    if (!userDog.updated) {
-      const res = await axios.get(baseURL + `dogs/${userDog.dog.id}`)
-      if (res.status === 200) {
-        const updatedDog = {updated : true, dog : res.data}
-        setUserDog(updatedDog)
-        return updatedDog
-      }
-      return null
-    }
-    return userDog
+  const updateUser = () => {
+    
   }
+
+//   const updateUserDog = async () => {
+//     if (!userDog.updated) {
+//       const res = await axios.get(baseURL + `dogs/${userDog.dog.id}`)
+//       if (res.status === 200) {
+//         const updatedDog = {updated : true, dog : res.data}
+//         setUserDog(updatedDog)
+//         return updatedDog
+//       }
+//       return null
+//     }
+//     return userDog
+//   }
   
-  const getPromiseDogList = async () => {
-    const res = await Promise.all(user.dogIds.map(dogId =>
-        axios.get(`http://localhost:8080/dogs/${dogId}`)
-    ))
-    return res
-}
+//   const getPromiseDogList = async () => {
+//     const res = await Promise.all(user.dogIds.map(dogId =>
+//         axios.get(`http://localhost:8080/dogs/${dogId}`)
+//     ))
+//     return res
+// }
 
   /* 
     The page showing is changing depend on what the currentMode value is. 
     Each component can set the page showing and the user who's logged in now and the dog chosen.
   */
   if (currentMode === "Login") {
-    page = <Login baseURL={baseURL} getPromiseDogList={getPromiseDogList} userDogList={userDogList} setUserDogList={setUserDogList} loggedIn={loggedIn} setLoggedIn={setLoggedIn} setCurrentMode = {setCurrentMode} user={user} setUser={setUser} userDog={userDog} setUserDog={setUserDog}/>
+    page = <Login baseURL={baseURL} user={user} setUser={setUser} setSelectedDogIndex={setSelectedDogIndex} setCurrentMode={setCurrentMode} />
   }
   if (currentMode === "Neighbors") {
-    page = <Neighbors setCurrentMode = {setCurrentMode} userDog={userDog} userDogFriends={userDogFriends} updateUserDog={updateUserDog} />
+    page = <Neighbors baseURL={baseURL} setCurrentMode = {setCurrentMode} user={user} selectedDogIndex={selectedDogIndex} />
   }
   if (currentMode === 'Events') {
     page = <Events setCurrentMode = {setCurrentMode} userDog={userDog} />
   }
   if (currentMode === 'Friends') {
-    page = <Friends currentMode={currentMode} updateUserDog={updateUserDog} userDogFriends={userDogFriends} setUserDogFriends={setUserDogFriends} setCurrentMode = {setCurrentMode} userDog={userDog} setUserDog={setUserDog} />
+    page = <Friends setCurrentMode = {setCurrentMode} selectedDogIndex={selectedDogIndex} user={user} />
   }
   if (currentMode === 'MyPage') {
-    page = <MyPage setLoggedIn={setLoggedIn} getPromiseDogList={getPromiseDogList} userDogList={userDogList} setUserDogList={setUserDogList} setCurrentMode = {setCurrentMode} user={user} userDog={userDog} setUser={setUser} setUserDog={setUserDog} />
+    page = <MyPage setSelectedDogIndex={setSelectedDogIndex} setLoggedOut={setLoggedOut} setCurrentMode = {setCurrentMode} setUser={setUser} user={user} selectedDogIndex={selectedDogIndex} />
+  }
+  if (currentMode === 'Update') {
+    page = <Update user={user} selectedDogIndex={selectedDogIndex}/>
   }
 
   return (

@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import DogRegistration from '../Login/DogRegistration'
 const { kakao } = window
 
-const KakaoMap = (props) => {
+const FriendLocationKakaoMap = ({dog}) => {
   // const [kakaoMap, setKakaoMap] = useState(null)
   const [setBounds, setSetBounds] = useState(null)
 
   const baseURL = 'http://localhost:8080/'
 
-  const promiseGetPosition = async (dog) => {
-    const location = await axios.get(baseURL + `locations/${dog.walkLocationIds[0]}`)
-    return { title: dog.name, lat: location.data.latitude, lng: location.data.longitude }
+  const getPosition = (dog) => {
+    if (dog.walkLocations.length === 0) {
+      return
+    }
+    return { title: dog.name, lat: dog.walkLocations[0].latitude, lng: dog.walkLocations[0].longitude }
   }
 
-  const drawMap = async () => {
-    const my = await promiseGetPosition(props.userDog.dog)
-    const friends = await Promise.all(props.userDogFriends.map(promiseGetPosition))
-    const markerPositions = [my, ...friends]
-    const container = document.getElementById('map')
+  useEffect(() => {
+    const myPosition = getPosition(dog)
+    const friendsPosition =  dog.friends.map(getPosition)
+    const markerPositions = [myPosition, ...friendsPosition]
+    console.log(markerPositions)
+    const container = document.getElementById('map1')
     const options = {
       center: new kakao.maps.LatLng(markerPositions[0].lat, markerPositions[0].lng),
       level: 3
@@ -44,18 +48,19 @@ const KakaoMap = (props) => {
     setSetBounds(() => {
       kakaoMap.setBounds(bounds)
     })
-  }
-
-  useEffect(() => {
-    props.updateUserDog()
-    drawMap()
   }, [])
+
+  if (dog.walkLocations.length === 0) {
+    return (
+      <DogRegistration />
+    )
+  }
 
   return (
     <>
-      <div id="map" style={{ width: '500px', height: '400px' }}></div>
+      <div id="map1" style={{ width: '500px', height: '400px' }}></div>
     </>
   )
 }
 
-export default KakaoMap
+export default FriendLocationKakaoMap

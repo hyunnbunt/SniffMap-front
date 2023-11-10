@@ -5,7 +5,7 @@ import LoginForm from './Login/LoginForm'
 
 const Login = (props) => {
 
-    const [loginInput, setLoginInput] = useState({ email: "", password: "" })
+    const [loginInput, setLoginInput] = useState({ email: "", pw: "" })
     const [msg, setMsg] = useState("")
 
     /* A function that runs when the login input changes. 
@@ -24,8 +24,8 @@ const Login = (props) => {
         e.preventDefault()
         const loginInputForm =
         {
-            userEmail: loginInput.email,
-            userPw: loginInput.password
+            email: loginInput.email,
+            pw: loginInput.pw
         }
         requestLogin(loginInputForm)
     }
@@ -35,13 +35,13 @@ const Login = (props) => {
         const loginURL = props.baseURL + 'users/login'
         const res = await axios.post(loginURL, loginInputForm)
         if (res.status === 200) {
-            props.setLoggedIn(true)
-            props.setUser(res.data)
+            console.log(res.data)
+            props.setUser({...res.data, updated:true})
         }
         setMsg("Login failed.")
     }
 
-    if (!props.loggedIn) {
+    if (props.user == null) {
         return (
             <LoginForm
                 loginInput={loginInput}
@@ -51,18 +51,16 @@ const Login = (props) => {
                 msg={msg}
             />
         )
-    } else {
-        return (
-            <Success
-                user={props.user}
-                setUser={props.setUser}
-                setUserDog={props.setUserDog}
-                setCurrentMode={props.setCurrentMode}
-                getPromiseDogList={props.getPromiseDogList}
-                setUserDogList={props.setUserDogList}
-            />
-        )
     }
+    return (
+        <Success
+            user={props.user}
+            setUser={props.setUser}
+            setSelectedDogIndex={props.setSelectedDogIndex}
+            setCurrentMode={props.setCurrentMode}
+        />
+    )
+
 }
 
 export default Login

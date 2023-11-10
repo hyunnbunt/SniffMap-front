@@ -7,18 +7,16 @@ import DropdownButton from 'react-bootstrap/DropdownButton'
 
 const DogSelection = (props) => {
 
-    const [title, setTitle] = useState("click to start")
-    const [selectedDog, setSelectedDog] = useState(null)
+    const [title, setTitle] = useState("choose one of your dogs")
 
     const handleDogSelect = (eventKey) => {
-        setSelectedDog(props.userDogList[eventKey])
-        setTitle(props.userDogList[eventKey].name)
+        props.setSelectedDogIndex(eventKey)
+        setTitle(props.dogs[eventKey].name)
     }
 
     /* If the user selects a dog, present 'Friends' tab. */
     const handleSelectionSubmit = (e) => {
         e.preventDefault()
-        props.setUserDog({updated : true, dog: selectedDog})
         props.setCurrentMode("Friends")
     }
 
@@ -27,14 +25,14 @@ const DogSelection = (props) => {
             <form onSubmit={handleSelectionSubmit}>
                 <DropdownButton id="dog-dropdown-button" title={title} onSelect={handleDogSelect}>
                     {
-                        props.dogsList.map((dog, index) =>
+                        props.dogs.map((dog, index) =>
                             <Dropdown.Item key={dog.id} href={`#/action-${dog.id}`} eventKey={index}>
                                 {dog.name}
                             </Dropdown.Item>
                         )
                     }
                 </DropdownButton>
-                <button type="submit">Start!</button>
+                <button type="submit">confirm</button>
             </form>
         </>
     )

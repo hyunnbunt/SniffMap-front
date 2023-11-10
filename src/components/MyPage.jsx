@@ -1,4 +1,4 @@
-import React from 'react'
+import React,  {useState}  from 'react'
 import DogSelection from './Login/DogSelection'
 
 const MyPage = (props) => {
@@ -22,12 +22,6 @@ const MyPage = (props) => {
         props.setCurrentMode("Update")
     }
 
-    useState(() => {
-        if (!props.user.updated) {
-            props.updateUser()
-        }
-    }, [])
-
     return (
         <>
             <h1>This is My Page.</h1>
@@ -36,6 +30,7 @@ const MyPage = (props) => {
             <h2>Your email : {props.user.email}</h2>
             <h2>Your username : {props.user.name}</h2>
             <h2>Selected dog : {props.user.dogs[props.selectedDogIndex].name}</h2>
+            <h2>Your dog's profile image :</h2>
             <img src={props.user.profileImageURL}  style={{ width: '500px'}}/>
         </>
     )

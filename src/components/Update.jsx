@@ -6,7 +6,6 @@ import { getStorage, ref, uploadBytes } from "firebase/storage"
 const Update = (props) => {
 
     const [file, setFile] = useState(null)
-    const [imgURL, setImgURL] = useState("")
 
     // const firebaseConfig = {
     //     apiKey: "AIzaSyAs_ZYJiY7ieqedtRkAQUcDCgnkvcLikww",
@@ -39,9 +38,12 @@ const Update = (props) => {
             }   
         }
         const res = await axios.post(actionURI, image, config)
-        console.log(res.data)
-        setImgURL(res.data.profileImageURL)
-        return res.data
+        console.log(res)
+        if (res.status === 200) {
+            console.log(res.data)
+            await props.updateUser()
+            props.setCurrentMode("MyPage")
+        }
     }
 
     const handleInputFileChange = (e) => {
@@ -58,7 +60,7 @@ const Update = (props) => {
                 <br></br>
                 <button type="submit">upload</button>
             </form>
-            <img src={imgURL}  style={{ width: '500px'}}/>
+
         </>
     )
 }

@@ -5,15 +5,14 @@ import LoginForm from './Login/LoginForm'
 
 const Login = (props) => {
 
-    const [loginInput, setLoginInput] = useState({ email: "", pw: "" })
     const [msg, setMsg] = useState("")
 
     /* A function that runs when the login input changes. 
         The login input contains email and password. */
     const handleLoginInputChange = (e) => {
         console.log(e.target.value)
-        setLoginInput({
-            ...loginInput,
+        props.setLoginInput({
+            ...props.loginInput,
             [e.target.name]: e.target.value
         })
     }
@@ -22,12 +21,13 @@ const Login = (props) => {
     const handleLoginSubmit = (e) => {
         // Block the page to get reloaded.
         e.preventDefault()
-        const loginInputForm =
-        {
-            email: loginInput.email,
-            pw: loginInput.pw
-        }
-        requestLogin(loginInputForm)
+        // const loginInputForm =
+        // {
+        //     email: props.loginInput.email,
+        //     pw: props.loginInput.pw
+        // }
+        props.updateUser()
+        // requestLogin(loginInputForm)
     }
 
     /* A function that requests to the login API and sets the user. */
@@ -36,7 +36,7 @@ const Login = (props) => {
         const res = await axios.post(loginURL, loginInputForm)
         if (res.status === 200) {
             console.log(res.data)
-            props.setUser({...res.data, updated:true})
+            props.setUser(res.data)
         }
         setMsg("Login failed.")
     }
@@ -44,7 +44,7 @@ const Login = (props) => {
     if (props.user == null) {
         return (
             <LoginForm
-                loginInput={loginInput}
+                loginInput={props.loginInput}
                 handleLoginSubmit={handleLoginSubmit}
                 handleLoginInputChange={handleLoginInputChange}
                 setCurrentMode={props.setCurrentMode}

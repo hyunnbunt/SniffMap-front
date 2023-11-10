@@ -14,6 +14,7 @@ const App = () => {
 
   const [currentMode, setCurrentMode] = useState('Login')
   const [user, setUser] = useState(null)
+  const [loginInput, setLoginInput] = useState({email:"", pw:""})
   const [selectedDogIndex, setSelectedDogIndex] = useState(null)
   const [loggedOut, setLoggedOut] = useState(false)
   
@@ -32,8 +33,15 @@ const App = () => {
     setCurrentMode(n)
   }
 
-  const updateUser = () => {
-    
+  const updateUser = async () => {
+    const loginURL = baseURL + 'users/login'
+    console.log(loginInput)
+    const res = await axios.post(loginURL, loginInput)
+    if (res.status === 200) {
+        setUser(res.data)
+    } else {
+      setCurrentMode("Login")
+    }
   }
 
 //   const updateUserDog = async () => {
@@ -61,7 +69,7 @@ const App = () => {
     Each component can set the page showing and the user who's logged in now and the dog chosen.
   */
   if (currentMode === "Login") {
-    page = <Login baseURL={baseURL} user={user} setUser={setUser} setSelectedDogIndex={setSelectedDogIndex} setCurrentMode={setCurrentMode} />
+    page = <Login loginInput={loginInput} setLoginInput={setLoginInput} baseURL={baseURL} updateUser={updateUser} user={user} setUser={setUser} setSelectedDogIndex={setSelectedDogIndex} setCurrentMode={setCurrentMode} />
   }
   if (currentMode === "Neighbors") {
     page = <Neighbors baseURL={baseURL} setCurrentMode = {setCurrentMode} user={user} selectedDogIndex={selectedDogIndex} />
@@ -73,10 +81,10 @@ const App = () => {
     page = <Friends setCurrentMode = {setCurrentMode} selectedDogIndex={selectedDogIndex} user={user} />
   }
   if (currentMode === 'MyPage') {
-    page = <MyPage setSelectedDogIndex={setSelectedDogIndex} setLoggedOut={setLoggedOut} setCurrentMode = {setCurrentMode} setUser={setUser} user={user} selectedDogIndex={selectedDogIndex} />
+    page = <MyPage updateUser={updateUser} setSelectedDogIndex={setSelectedDogIndex} setLoggedOut={setLoggedOut} setCurrentMode = {setCurrentMode} setUser={setUser} user={user} selectedDogIndex={selectedDogIndex} />
   }
   if (currentMode === 'Update') {
-    page = <Update user={user} selectedDogIndex={selectedDogIndex}/>
+    page = <Update updateUser={updateUser} setCurrentMode={setCurrentMode} user={user} selectedDogIndex={selectedDogIndex}/>
   }
 
   return (

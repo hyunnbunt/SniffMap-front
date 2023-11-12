@@ -1,4 +1,4 @@
-import React,  {useState}  from 'react'
+import React, { useState } from 'react'
 import DogSelection from './Login/DogSelection'
 
 const MyPage = (props) => {
@@ -25,13 +25,13 @@ const MyPage = (props) => {
     return (
         <>
             <h1>This is My Page.</h1>
-            <button onClick={handleClickUpdate}>update my info</button>
+            <img src={props.user.profileImageURL} style={{ width: '120px' }} />
+            <button onClick={handleClickUpdate}>update profile image</button>
+            <h2>{props.user.email}</h2>
+            <h2>username : {props.user.name}</h2>
+            <h2>{props.user.dogs[props.selectedDogIndex].name}</h2>
+            <button onClick={handleClickUpdate}>update your dog's profile image</button>
             <button onClick={handleClickLogOut}>Logout</button>
-            <h2>Your email : {props.user.email}</h2>
-            <h2>Your username : {props.user.name}</h2>
-            <h2>Selected dog : {props.user.dogs[props.selectedDogIndex].name}</h2>
-            <h2>Your dog's profile image :</h2>
-            <img src={props.user.profileImageURL}  style={{ width: '500px'}}/>
         </>
     )
 }

@@ -52,7 +52,7 @@ const Update = (props) => {
     console.log(props.user.profileImageURL)
     return (
         <>
-            <h1>Upload {props.user.dogs[props.selectedDogIndex].name}'s images!</h1>
+            <h1>Upload your new profile photo here.</h1>
             {/* <form action={actionURI} method="post" encType="multipart/form-data"> */}
             <form onSubmit={handleClickSubmit}>
             {/* <form action={actionURI} method="post"> */}

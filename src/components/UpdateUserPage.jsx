@@ -1,9 +1,9 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import axios from 'axios'
-import { initializeApp } from "firebase/app";
-import { getStorage, ref, uploadBytes } from "firebase/storage"
+import { Cropper, ReactCropperElement } from 'react-cropper'
+import 'cropperjs/dist/cropper.css'
 
-const Update = (props) => {
+const UpdateUserPage = (props) => {
 
     const [file, setFile] = useState(null)
 
@@ -19,7 +19,8 @@ const Update = (props) => {
 
     // Create a root reference
     // const storage = getStorage()
-    const actionURI = `http://localhost:8080/${props.user.id}/upload-photos`
+    const actionURI = `http://localhost:8080/owners/${props.user.id}/upload-profile`
+    const [previewSrc, setPreviewSrc] = useState("")
 
     const handleClickSubmit = async (e) => {
         e.preventDefault(e)
@@ -29,7 +30,7 @@ const Update = (props) => {
         // console.log(snapshot)
         const image = new FormData()
     
-        image.append("profileImage", file, file.name)
+        image.append("imageFile", file, file.name)
         image.append("uploadFileName", file.name)
         console.log(image)
         const config = {
@@ -46,13 +47,30 @@ const Update = (props) => {
         }
     }
 
+    useEffect(() => {
+        previewFile()
+    }, [file])
+
     const handleInputFileChange = (e) => {
         setFile(e.target.files[0])
+    }
+
+    const previewFile = () => {
+        if (file !== null) {
+            if (previewSrc !== "") {
+                URL.revokeObjectURL(previewSrc)
+            }
+            const objectUrl = URL.createObjectURL(file)
+            setPreviewSrc(objectUrl)
+        }
     }
     console.log(props.user.profileImageURL)
     return (
         <>
             <h1>Upload your new profile photo here.</h1>
+            {/*업로드한 이미지 미리보기*/}
+            <img src={previewSrc} style={{ width: '120px' }} alt="preview" />
+            <Cropper />
             {/* <form action={actionURI} method="post" encType="multipart/form-data"> */}
             <form onSubmit={handleClickSubmit}>
             {/* <form action={actionURI} method="post"> */}
@@ -65,4 +83,4 @@ const Update = (props) => {
     )
 }
 
-export default Update
+export default UpdateUserPage

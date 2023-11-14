@@ -3,6 +3,8 @@ import DogSelection from './Login/DogSelection'
 
 const MyPage = (props) => {
 
+    const dog = props.user.dogs[props.selectedDogIndex]
+
 
     const handleClickLogOut = () => {
         props.setUser(null)
@@ -18,19 +20,30 @@ const MyPage = (props) => {
         )
     }
 
-    const handleClickUpdate = () => {
-        props.setCurrentMode("Update")
+    const handleClickUpdate = (updateObject) => {
+        console.log(updateObject)
+        if (updateObject === "user") {
+            props.setCurrentMode("UpdateUser")
+        } 
+        if (updateObject === "dog") {
+            props.setCurrentMode("UpdateDog")
+        }
     }
+
+    console.log(dog)
+
+
 
     return (
         <>
             <h1>This is My Page.</h1>
             <img src={props.user.profileImageURL} style={{ width: '120px' }} />
-            <button onClick={handleClickUpdate}>update profile image</button>
+            <button onClick={() => handleClickUpdate("user")}>update profile image</button>
             <h2>{props.user.email}</h2>
             <h2>username : {props.user.name}</h2>
             <h2>{props.user.dogs[props.selectedDogIndex].name}</h2>
-            <button onClick={handleClickUpdate}>update your dog's profile image</button>
+            <img src={props.user.dogs[props.selectedDogIndex].dogProfileImageURL} style={{ width: '120px' }} />
+            <button onClick={() => handleClickUpdate("dog")}>update your dog's profile image</button>
             <button onClick={handleClickLogOut}>Logout</button>
         </>
     )

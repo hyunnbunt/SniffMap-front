@@ -6,7 +6,8 @@ import Neighbors from './components/Neighbors'
 import Events from './components/Events'
 import Friends from './components/Friends'
 import MyPage from './components/MyPage'
-import Update from './components/Update'
+import UpdateUserPage from './components/UpdateUserPage'
+import UpdateDogPage from './components/UpdateDogPage'
 
 const App = () => {
 
@@ -83,9 +84,13 @@ const App = () => {
   if (currentMode === 'MyPage') {
     page = <MyPage updateUser={updateUser} setSelectedDogIndex={setSelectedDogIndex} setLoggedOut={setLoggedOut} setCurrentMode = {setCurrentMode} setUser={setUser} user={user} selectedDogIndex={selectedDogIndex} />
   }
-  if (currentMode === 'Update') {
-    page = <Update updateUser={updateUser} setCurrentMode={setCurrentMode} user={user} selectedDogIndex={selectedDogIndex}/>
+  if (currentMode === 'UpdateUser') {
+    page = <UpdateUserPage updateUser={updateUser} setCurrentMode={setCurrentMode} user={user} selectedDogIndex={selectedDogIndex}/>
   }
+  if (currentMode === 'UpdateDog') {
+    page = <UpdateDogPage updateUser={updateUser} setCurrentMode={setCurrentMode} user={user} selectedDogIndex={selectedDogIndex}/>
+  }
+
 
   return (
     <>

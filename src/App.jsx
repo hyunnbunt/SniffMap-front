@@ -69,6 +69,7 @@ const App = () => {
     The page showing is changing depend on what the currentMode value is. 
     Each component can set the page showing and the user who's logged in now and the dog chosen.
   */
+
   if (currentMode === "Login") {
     page = <Login loginInput={loginInput} setLoginInput={setLoginInput} baseURL={baseURL} updateUser={updateUser} user={user} setUser={setUser} setSelectedDogIndex={setSelectedDogIndex} setCurrentMode={setCurrentMode} />
   }

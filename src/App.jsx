@@ -12,91 +12,122 @@ import UpdateDogPage from './components/UpdateDogPage'
 const App = () => {
 
   /* Don't put component in state! */
-
   const [currentMode, setCurrentMode] = useState('Login')
-  const [user, setUser] = useState(null)
-  const [loginInput, setLoginInput] = useState({email:'', pw:''})
-  const [selectedDogIndex, setSelectedDogIndex] = useState(null)
-  const [loggedOut, setLoggedOut] = useState(false)
-  
-  let page = null
-  const mode = [
-    "Neighbors",
-    "Events",
-    "Friends",
-    "MyPage"
-  ]
+  const [loginMsg, setLoginMsg] = useState('')
+  const [user, setUser] = useState(
+    {
+      loginInfo: { email: '', pw: '' },
+      userData: null,
+      selectedDogIndex: null,
+      loggedOut: false
+    }
+  )
+  // const [user, setUser] = useState(null)
+  // const [loginInput, setLoginInput] = useState({ email: '', pw: '' })
 
-  const baseURL = 'http://localhost:8080/'
+  // const [selectedDogIndex, setSelectedDogIndex] = useState(null)
+  // const [loggedOut, setLoggedOut] = useState(false)
 
-  /* This function changes the currentMode string value when the button clicked. */
+  const serverURL = 'http://localhost:8080'
+
+  /* It changes the currentMode string value when the button clicked. */
   const handleNavbarClicks = (n) => {
     setCurrentMode(n)
   }
 
+  /* It updates the user data with the response of a new login request to the server. */
   const updateUser = async () => {
-    const loginURL = baseURL + 'users/login'
+    const loginURL = `${serverURL}/users/login`
     console.log(loginInput)
     const res = await axios.post(loginURL, loginInput)
     if (res.status === 200) {
-        setUser(res.data)
+      setUser(res.data)
     } else {
-      setCurrentMode("Login")
+      setLoginMsg('Error occured, please try again.')
+      setCurrentMode('Login')
     }
   }
 
-//   const updateUserDog = async () => {
-//     if (!userDog.updated) {
-//       const res = await axios.get(baseURL + `dogs/${userDog.dog.id}`)
-//       if (res.status === 200) {
-//         const updatedDog = {updated : true, dog : res.data}
-//         setUserDog(updatedDog)
-//         return updatedDog
-//       }
-//       return null
-//     }
-//     return userDog
-//   }
-  
-//   const getPromiseDogList = async () => {
-//     const res = await Promise.all(user.dogIds.map(dogId =>
-//         axios.get(`http://localhost:8080/dogs/${dogId}`)
-//     ))
-//     return res
-// }
+  let page = null
+  const mode = [
+    'Neighbors',
+    'Events',
+    'Friends',
+    'MyPage'
+  ]
 
-  /* 
-    The page showing is changing depend on what the currentMode value is. 
-    Each component can set the page showing and the user who's logged in now and the dog chosen.
-  */
-
-  if (currentMode === "Login") {
-    page = <Login loginInput={loginInput} setLoginInput={setLoginInput} baseURL={baseURL} updateUser={updateUser} user={user} setUser={setUser} setSelectedDogIndex={setSelectedDogIndex} setCurrentMode={setCurrentMode} />
+  if (currentMode === 'Login') {
+    page =
+      <Login
+        user={user}
+        setUser={setUser}
+        updateUser={updateUser}
+        serverURL={serverURL}
+        setCurrentMode={setCurrentMode}
+      />
   }
-  if (currentMode === "Neighbors") {
-    page = <Neighbors baseURL={baseURL} setCurrentMode = {setCurrentMode} user={user} selectedDogIndex={selectedDogIndex} />
+  if (currentMode === 'Neighbors') {
+    page =
+      <Neighbors
+        user={user}
+        serverURL={serverURL}
+        setCurrentMode={setCurrentMode}
+      />
   }
   if (currentMode === 'Events') {
-    page = <Events setCurrentMode = {setCurrentMode} userDog={userDog} />
+    page =
+      <Events
+        user={user}
+        setCurrentMode={setCurrentMode}
+
+      />
   }
   if (currentMode === 'Friends') {
-    page = <Friends setCurrentMode = {setCurrentMode} selectedDogIndex={selectedDogIndex} user={user} />
+    page =
+      <Friends
+        user={user}
+        setCurrentMode={setCurrentMode}
+      />
   }
   if (currentMode === 'MyPage') {
-    page = <MyPage updateUser={updateUser} setSelectedDogIndex={setSelectedDogIndex} setLoggedOut={setLoggedOut} setCurrentMode = {setCurrentMode} setUser={setUser} user={user} selectedDogIndex={selectedDogIndex} />
+    page =
+      <MyPage
+        user={user}
+        setUser={setUser}
+        updateUser={updateUser}
+        setCurrentMode={setCurrentMode}
+      />
   }
   if (currentMode === 'UpdateUser') {
-    page = <UpdateUserPage updateUser={updateUser} setCurrentMode={setCurrentMode} user={user} selectedDogIndex={selectedDogIndex}/>
+    page =
+      <UpdateUserPage
+        user={user}
+        setUser={setUser}
+        updateUser={updateUser}
+        serverURL={serverURL}
+        setCurrentMode={setCurrentMode}
+      />
   }
   if (currentMode === 'UpdateDog') {
-    page = <UpdateDogPage updateUser={updateUser} setCurrentMode={setCurrentMode} user={user} selectedDogIndex={selectedDogIndex}/>
+    page =
+      <UpdateDogPage
+        user={user}
+        setUser={setUser}
+        updateUser={updateUser}
+        serverURL={serverURL}
+        setCurrentMode={setCurrentMode}
+      />
   }
-
 
   return (
     <>
-      <NavBar handleClicks={handleNavbarClicks} mode={mode} />
-      { page }
+      <NavBar
+        mode={mode}
+        handleClicks={handleNavbarClicks}
+      />
+      <div>
+        {page}
+      </div>
     </>
   )
 }

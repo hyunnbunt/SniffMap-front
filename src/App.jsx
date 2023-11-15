@@ -18,16 +18,10 @@ const App = () => {
     {
       loginInfo: { email: '', pw: '' },
       userData: null,
-      selectedDogIndex: null,
+      selectedDog: null,
       loggedOut: false
     }
   )
-  // const [user, setUser] = useState(null)
-  // const [loginInput, setLoginInput] = useState({ email: '', pw: '' })
-
-  // const [selectedDogIndex, setSelectedDogIndex] = useState(null)
-  // const [loggedOut, setLoggedOut] = useState(false)
-
   const serverURL = 'http://localhost:8080'
 
   /* It changes the currentMode string value when the button clicked. */
@@ -36,12 +30,18 @@ const App = () => {
   }
 
   /* It updates the user data with the response of a new login request to the server. */
-  const updateUser = async () => {
+  const updateUser = async (loginInput) => {
     const loginURL = `${serverURL}/users/login`
     console.log(loginInput)
     const res = await axios.post(loginURL, loginInput)
     if (res.status === 200) {
-      setUser(res.data)
+      setUser(
+        {
+          ...user,
+          loginInfo: loginInput,
+          userData: res.data
+        }
+      )
     } else {
       setLoginMsg('Error occured, please try again.')
       setCurrentMode('Login')
@@ -62,6 +62,7 @@ const App = () => {
         user={user}
         setUser={setUser}
         updateUser={updateUser}
+        loginMsg={loginMsg}
         serverURL={serverURL}
         setCurrentMode={setCurrentMode}
       />
@@ -78,15 +79,18 @@ const App = () => {
     page =
       <Events
         user={user}
+        updateUser={updateUser}
         setCurrentMode={setCurrentMode}
-
       />
   }
   if (currentMode === 'Friends') {
     page =
       <Friends
         user={user}
+        setUser={setUser}
+        updateUser={updateUser}
         setCurrentMode={setCurrentMode}
+        serverURL={serverURL}
       />
   }
   if (currentMode === 'MyPage') {

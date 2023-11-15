@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import DogSelection from './Login/DogSelection'
 
 const MyPage = (props) => {
 

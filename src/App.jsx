@@ -11,11 +11,11 @@ import UpdateDogPage from './components/UpdateDogPage'
 
 const App = () => {
 
-  /* Don't put component in state! 복잡해짐 */
+  /* Don't put component in state! */
 
   const [currentMode, setCurrentMode] = useState('Login')
   const [user, setUser] = useState(null)
-  const [loginInput, setLoginInput] = useState({email:"", pw:""})
+  const [loginInput, setLoginInput] = useState({email:'', pw:''})
   const [selectedDogIndex, setSelectedDogIndex] = useState(null)
   const [loggedOut, setLoggedOut] = useState(false)
   

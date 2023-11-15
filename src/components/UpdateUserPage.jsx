@@ -7,17 +7,10 @@ import Modal from 'react-modal'
 const UpdateUserPage = (props) => {
 
     const [file, setFile] = useState(null)
-    const [image, setImage] = useState("")
+    const [image, setImage] = useState(props.user.profileImageURL)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [cropResult, setCropResult] = useState(null)
-
-    const onCrop = () => {
-        const imageElement = cropperRef?.current
-        const cropper = imageElement?.cropper
-        const croppedDataURL = cropper.getCroppedCanvas().toDataURL()
-        const blob = dataURItoBlob(croppedDataURL)
-        setFile(blob)
-    }
+    const [isImageCropped, setIsImageCropped] = useState(false)
 
     const openModal = () => {
         setIsModalOpen(true)
@@ -25,6 +18,7 @@ const UpdateUserPage = (props) => {
     const closeModal = () => {
         setIsModalOpen(false)
     }
+
     const customStyles = {
         content: {
             top: '50%',
@@ -36,13 +30,25 @@ const UpdateUserPage = (props) => {
         },
     }
 
+    const updateFileToCroppedImage = async (url) => {
+            const response = await fetch(url)
+            console.log(response)
+            const data = await response.blob()
+            const ext = url.split(";")[0].split("/").pop() 
+            const name = `_user_${props.user.id}_cropped.${ext}` 
+            console.log(ext)
+            console.log(name)
+            const metadata = { type: `image/${ext}` }
+            return new File([data], name, metadata)
+    }
 
-    const handleClickSubmit = async (e) => {
-        e.preventDefault(e)
+    console.log(file)
+    
+    const uploadImageToServer = async (uploadImageFile) => {
         const actionURI = `http://localhost:8080/owners/${props.user.id}/upload-profile`
         const imageData = new FormData()
-        imageData.append("imageFile", file, file.name)
-        imageData.append("uploadFileName", file.name)
+        imageData.append("imageFile", uploadImageFile, uploadImageFile.name)
+        imageData.append("uploadFileName", uploadImageFile.name)
         const config = {
             headers: {
                 "Content-Type": "multipart/form-data"
@@ -56,13 +62,20 @@ const UpdateUserPage = (props) => {
         }
     }
 
+
+    const handleClickSubmit = async (e) => {
+        e.preventDefault(e)
+        if (isImageCropped) {
+            const croppedFile = await updateFileToCroppedImage(cropResult)
+            setFile(croppedFile)
+            await uploadImageToServer(croppedFile)
+        }
+    }
+
+
     useEffect(() => {
-        if (file === null) {
-            setImage("")
-        } else {
-            if (image !== "") {
-                URL.revokeObjectURL(image)
-            }
+        if (file !== null) {
+            URL.revokeObjectURL(image)
             const objectUrl = URL.createObjectURL(file)
             setImage(objectUrl)
         }
@@ -71,68 +84,36 @@ const UpdateUserPage = (props) => {
     const handleInputFileChange = (e) => {
         setFile(e.target.files[0])
     }
-
-    const handleCrop = (e) => {
-        console.log("cropped")
+    const cropper = useRef()
+    
+    const handleCrop = () => {
+        const cropperData = cropper?.current.cropper
+        const croppedCanvas = cropperData.getCroppedCanvas()
+        setCropResult(croppedCanvas.toDataURL())
     }
-
-    const getCroppedImg = async (e) => {
-        e.preventDefault()
-        try {
-            const canvas = <canvas></canvas>
-            const scaleX = image.naturalWidth / image.width
-            const scaleY = image.naturalHeight / image.height
-            canvas.width = crop.width
-            canvas.height = crop.height
-            const ctx = canvas.getContext('2d')
-            ctx.drawImage(
-                image,
-                crop.x * scaleX,
-                crop.y * scaleY,
-                crop.width * scaleX,
-                crop.height * scaleY,
-                0,
-                0,
-                crop.width,
-                crop.height
-            )
-            const base64Image = canvas.toDataURL("image/jpeg", 1)
-            setImage(base64Image)
-        } catch (error) {
-            console.log(error)
-            console.log("crop the image")
-        }
-
-        return new Promise((resolve, reject) => {
-            canvas.toBlob(blob => {
-                if (!blob) {
-                    console.error('Canvas is empty');
-                    return;
-                }
-                blob.name = fileName;
-                window.URL.revokeObjectURL(this.fileUrl);
-                this.fileUrl = window.URL.createObjectURL(blob);
-                this.setState({ blobFile: blob }) // Set blob image inside the state here 
-                resolve(this.fileUrl);
-            }, 'image/jpeg');
-        });
-    }
-
-    // const handleCropSubmit = async (e) => {
-    //     await getCroppedImg(e)
-    //     setPreviewSrc(result)
-    // }
 
     const ModalChildren =
         <>
             <>Crop your image</>
-            <form onSubmit={getCroppedImg}>
-                <Cropper viewMode={1} src={image} style={{ width: '200px' }} />
+            <form onSubmit={(e) => {
+                e.preventDefault()
+                setImage(cropResult)
+                // console.log(cropResult)
+                setIsImageCropped(true)
+                setIsModalOpen(false)
+            }}>
+                <Cropper
+                    src={image}
+                    viewMode={1}
+                    initialAspectRatio={16 / 9}
+                    style={{ width: '200px' }}
+                    ref={cropper}
+                    crop={handleCrop}
+                />
                 <button>Crop!</button>
             </form>
         </>
 
-    console.log(props.user.profileImageURL)
     return (
         <>
             <h1>Upload your new profile photo here.</h1>

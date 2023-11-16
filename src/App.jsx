@@ -37,11 +37,27 @@ const App = () => {
         {
           ...user,
           loginInfo: loginInput,
-          userData: res.data
+          userData: res.data,
         }
       )
     } else {
       setLoginMsg('Error occured, please try again.')
+      setCurrentMode('Login')
+    }
+  }
+
+  const updateSelectedDog = async () => {
+    const dogRequestURL = `${serverURL}/dogs/${user.selectedDog.id}`
+    const res = await axios.get(dogRequestURL)
+    if (res.status === 200) {
+      setUser(
+        {
+          ...user,
+          selectedDog: res.data
+        }
+      )
+    } else {
+      setLoginMsg('Error occured, please login again.')
       setCurrentMode('Login')
     }
   }
@@ -97,7 +113,9 @@ const App = () => {
         user={user}
         setUser={setUser}
         updateUser={updateUser}
+        updateSelectedDog={updateSelectedDog}
         setCurrentMode={setCurrentMode}
+        serverURL={serverURL}
       />
   }
 

@@ -52,7 +52,7 @@ const MyPage = (props) => {
                 user={props.user}
                 updateUser={props.updateUser}
                 serverURL={props.serverURL}
-                setCurrentMode={props.setCurrentMode}
+                setMyPageMode={setMyPageMode}
                 setMsg={setMsg}
             />
         )
@@ -60,10 +60,9 @@ const MyPage = (props) => {
     if (myPageMode === 'dogUpdate') {
         return (
             <DogUpdate
-                dogData={dogData}
                 setDogData={setDogData}
                 serverURL={props.serverURL}
-                setCurrentMode={props.setCurrentMode}
+                setMyPageMode={setMyPageMode}
             />
         )
     }

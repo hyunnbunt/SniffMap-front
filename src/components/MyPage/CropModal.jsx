@@ -7,9 +7,19 @@ const CropModal = (props) => {
     
     const [cropImage, setCropImage] = useState(null)
 
+    
+    const croppedImageToFile = async (cropImageURL) => {
+        const img = await fetch(cropImageURL)
+        const imgData = await img.blob()
+        const ext = cropImageURL.split(";")[0].split("/").pop()
+        const name = `_user_${props.userData.id}_cropped.${ext}`
+        const metadata = { type: `image/${ext}` }
+        return new File([imgData], name, metadata)
+    }
+
     const handleClickCrop = async (e) => {
         e.preventDefault()
-        setUploadImage(cropImage)
+        props.setUploadImage(cropImage)
         const croppedFile = await croppedImageToFile(cropImage)
         props.setFile(croppedFile)
         props.closeModal()

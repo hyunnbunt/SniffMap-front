@@ -4,7 +4,8 @@ import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes } from "firebase/storage"
 
 const UpdateDogPage = (props) => {
-    const dog = props.user.dogs[props.selectedDogIndex]
+
+    const dogData = props.user.selectedDog
 
     const [file, setFile] = useState(null)
     const actionURI = `http://localhost:8080/dogs/${dog.id}/upload-profile`

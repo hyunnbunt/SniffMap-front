@@ -5,9 +5,7 @@ import NavBar from './components/NavBar'
 import Neighbors from './components/Neighbors'
 import Events from './components/Events'
 import Friends from './components/Friends'
-import MyPage from './components/MyPage'
-import UpdateUserPage from './components/UpdateUserPage'
-import UpdateDogPage from './components/UpdateDogPage'
+import MyPage from './components/MyPage/MyPage'
 
 const App = () => {
 
@@ -99,26 +97,6 @@ const App = () => {
         user={user}
         setUser={setUser}
         updateUser={updateUser}
-        setCurrentMode={setCurrentMode}
-      />
-  }
-  if (currentMode === 'UpdateUser') {
-    page =
-      <UpdateUserPage
-        user={user}
-        setUser={setUser}
-        updateUser={updateUser}
-        serverURL={serverURL}
-        setCurrentMode={setCurrentMode}
-      />
-  }
-  if (currentMode === 'UpdateDog') {
-    page =
-      <UpdateDogPage
-        user={user}
-        setUser={setUser}
-        updateUser={updateUser}
-        serverURL={serverURL}
         setCurrentMode={setCurrentMode}
       />
   }

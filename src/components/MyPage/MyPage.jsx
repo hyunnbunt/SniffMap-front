@@ -52,6 +52,7 @@ const MyPage = (props) => {
                 user={props.user}
                 updateUser={props.updateUser}
                 serverURL={props.serverURL}
+                myPageMode={myPageMode}
                 setMyPageMode={setMyPageMode}
                 setMsg={setMsg}
             />
@@ -62,6 +63,7 @@ const MyPage = (props) => {
             <DogUpdate
                 setDogData={setDogData}
                 serverURL={props.serverURL}
+                myPageMode={myPageMode}
                 setMyPageMode={setMyPageMode}
             />
         )

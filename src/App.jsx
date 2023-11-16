@@ -41,9 +41,11 @@ const App = () => {
         }
       )
     } else {
-      setLoginMsg('Error occured, please try again.')
+      setLoginMsg('Error occured, please login again.')
       setCurrentMode('Login')
+      return
     }
+    updateSelectedDog()
   }
 
   const updateSelectedDog = async () => {
@@ -113,7 +115,6 @@ const App = () => {
         user={user}
         setUser={setUser}
         updateUser={updateUser}
-        updateSelectedDog={updateSelectedDog}
         setCurrentMode={setCurrentMode}
         serverURL={serverURL}
       />

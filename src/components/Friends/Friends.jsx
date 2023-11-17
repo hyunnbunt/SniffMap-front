@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import FriendDetail from './Friends/FriendDetail'
+import FriendDetail from './FriendDetail'
 
 const Friends = (props) => {
 
     const [selectedFriend, setSelectedFriend] = useState(null)
-    const [dogData, setDogData] = useState(props.user.selectedDog)
     const [msg, setMsg] = useState('')
 
     const removeFromFriendsList = async (friend) => {
@@ -16,18 +15,18 @@ const Friends = (props) => {
             )
         console.log(res)
         if (res.status === 200) {
-            setDogData(res.data)
+            props.updateSelectedDogData()
         } else {
             setMsg('Can\'t update your friends list. Pleast try again.')
         }
-        props.updateUser(props.user.loginInfo)
+        props.updateUserData(props.user.loginInfo)
     }
 
     return (
         <>
             <h1>This is Friends Page.</h1>
-            <h2>{dogData.name}'s friends :</h2>
-            {dogData.friends.map(friend =>
+            <h2>{props.user.selectedDog.name}'s friends :</h2>
+            {props.user.selectedDog.friends.map(friend =>
                 <div key={friend.id}>
                     <h3 >
                         {friend.name}

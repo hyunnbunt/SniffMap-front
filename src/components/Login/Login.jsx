@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import LoginForm from './Login/LoginForm'
-import DogsList from './Login/DogsList'
+import LoginForm from './LoginForm'
+import DogsList from './DogsList'
 
 const Login = (props) => {
 
@@ -19,7 +19,7 @@ const Login = (props) => {
     const handleLoginSubmit = (e) => {
         // Block the page to get reloaded.
         e.preventDefault()
-        props.updateUser(loginInput)
+        props.updateUserData(loginInput)
     }
 
     if (props.user.userData === null) {

@@ -1,19 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import UserUpdate from './UserUpdate'
 import DogUpdate from './DogUpdate'
 
 const MyPage = (props) => {
-    /* Selected dog's data is in the state hook. 
-    When user updates a dog's info, the app doesn't update the whole user data object, 
-    it only updates selectedDog with the server's response to the dog update request. 
-    (If user updates the user info, the app updates the whole user object.) */
-    const [dogData, setDogData] = useState(props.user.selectedDog)
+
+    /* When user updates a dog's info, the app doesn't update the whole user data object, 
+    it only updates selectedDog with the server's response(dog dto). */
     const [myPageMode, setMyPageMode] = useState('myPage')
     const [msg, setMsg] = useState('')
 
+    useEffect(() => {
+        console.log('lll')
+        setMyPageMode('myPage')
+        setMsg('')
+    }, [])
+
     const handleClickLogOut = () => {
         props.setUser(null)
-        props.setCurrentMode('Login')
+        props.setCurrentMode('MyPage')
     }
 
     if (myPageMode === 'myPage') {
@@ -32,39 +36,46 @@ const MyPage = (props) => {
                 <h1>This is My Page.</h1>
                 <div>
                     <img src={props.user.userData.profileImageURL} style={{ width: '120px' }} />
-                    <button onClick={() => setMyPageMode('userUpdate')}>update profile image</button>
+                    <button onClick={() => setMyPageMode('user')}>update profile image</button>
                     <h2>{props.user.userData.email}</h2>
                     <h2>username : {props.user.userData.name}</h2>
                 </div>
                 <div>
-                    <h2>{dogData.name}</h2>
-                    <img src={dogData.dogProfileImageURL} style={{ width: '120px' }} />
-                    <button onClick={() => setMyPageMode('dogUpdate')}>update your dog's profile image</button>
+                    <h2>{props.user.selectedDog.name}</h2>
+                    <img src={props.user.selectedDog.dogProfileImageURL} style={{ width: '120px' }} />
+                    <button onClick={() => setMyPageMode('dog')}>update your dog's profile image</button>
                 </div>
                 <button onClick={handleClickLogOut}>Logout</button>
             </>
         )
     }
 
-    if (myPageMode === 'userUpdate') {
+    if (myPageMode === 'user') {
         return (
             <UserUpdate
                 user={props.user}
-                updateUser={props.updateUser}
+                setUser={props.setUser}
+                updateUserData={props.updateUserData}
                 serverURL={props.serverURL}
                 myPageMode={myPageMode}
                 setMyPageMode={setMyPageMode}
+                setCurrentMode={props.setCurrentMode}
                 setMsg={setMsg}
             />
         )
     }
-    if (myPageMode === 'dogUpdate') {
+    if (myPageMode === 'dog') {
         return (
             <DogUpdate
-                setDogData={setDogData}
+                user={props.user}
+                setUser={props.setUser}
+                updateUserData={props.updateUserData}
+                updateSelectedDogData={props.updateSelectedDogData}
                 serverURL={props.serverURL}
                 myPageMode={myPageMode}
                 setMyPageMode={setMyPageMode}
+                setCurrentMode={props.setCurrentMode}
+                setMsg={setMsg}
             />
         )
     }

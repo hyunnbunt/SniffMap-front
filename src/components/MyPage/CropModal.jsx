@@ -6,13 +6,12 @@ import 'cropperjs/dist/cropper.css'
 const CropModal = (props) => {
     
     const [cropImage, setCropImage] = useState(null)
-
     
     const croppedImageToFile = async (cropImageURL) => {
         const img = await fetch(cropImageURL)
         const imgData = await img.blob()
         const ext = cropImageURL.split(";")[0].split("/").pop()
-        const name = `_user_${props.userData.id}_cropped.${ext}`
+        const name = `${props.myPageMode}_profile_cropped.${ext}`
         const metadata = { type: `image/${ext}` }
         return new File([imgData], name, metadata)
     }
@@ -41,6 +40,7 @@ const CropModal = (props) => {
             transform: 'translate(-50%, -50%)',
         },
     }
+    
     const cropper = useRef()
     const modalChildren =
         <>

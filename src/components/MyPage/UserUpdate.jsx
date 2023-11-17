@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import CropModal from './CropModal'
+import React from 'react'
+
 import ProfileUpload from './ProfileUpload'
 
 const UpdateUserPage = (props) => {
@@ -9,7 +8,13 @@ const UpdateUserPage = (props) => {
         <>
             <h1>Upload user profile.</h1>
             <ProfileUpload
+                user={props.user}
+                setUser={props.setUser}
                 myPageMode={props.myPageMode}
+                serverURL={props.serverURL}
+                updateUserData={props.updateUserData}
+                setMyPageMode={props.setMyPageMode}
+                setCurrentMode={props.setCurrentMode}
             />
         </>
     )

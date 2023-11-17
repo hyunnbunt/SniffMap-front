@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react'
-import FriendLocationKakaoMap from './KakaoMap/FriendLocationKakaoMap'
-import NeighborDogsKakaoMap from './KakaoMap/NeighborDogsKakaoMap'
+import FriendLocationKakaoMap from './FriendLocationKakaoMap'
+import NeighborDogsKakaoMap from './NeighborDogsKakaoMap'
 
 const Neighbors = (props) => {
 

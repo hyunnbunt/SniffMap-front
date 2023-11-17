@@ -1,22 +1,24 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import CropModal from './CropModal'
 
-const ProfileUpload = () => {
+const ProfileUpload = (props) => {
 
     const userData = props.user.userData
     const dogData = props.user.selectedDog
 
+    let img = null
+    if (props.myPageMode === 'user') {
+        img = userData.profileImageURL
+    }
+    if (props.myPageMode === 'dog') {
+        img = dogData.dogProfileImageURL
+    }
+
     const [file, setFile] = useState(null)
-    const [uploadImage, setUploadImage] = useState(userData.profileImageURL)
+    const [uploadImage, setUploadImage] = useState(img)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [msg, setMsg] = useState('')
-
-    const closeModal = () => {
-        setIsModalOpen(false)
-    }
-
-    const openModal = () => {
-        setIsModalOpen(true)
-    }
 
     useEffect(() => {
         /* When the file is updated and it's not empty : 
@@ -28,10 +30,15 @@ const ProfileUpload = () => {
         }
     }, [file])
 
+    const closeModal = () => {
+        setIsModalOpen(false)
+    }
+
+    const openModal = () => {
+        setIsModalOpen(true)
+    }
+
     const uploadFileToServer = async (imgFile, requestTo) => {
-        if (requestTo === null) {
-            return
-        }
         const postURL = `${props.serverURL}/${requestTo}/upload-profile`
         const imgFormData = new FormData()
         imgFormData.append('imageFile', imgFile, imgFile.name)
@@ -44,21 +51,29 @@ const ProfileUpload = () => {
         const res = await axios.post(postURL, imgFormData, config)
         console.log(res)
         if (res.status === 200) {
-            await props.updateUser(props.user.loginInfo)
+            if (props.myPageMode === 'user') {
+                props.updateUserData(props.user.loginInfo)
+            }
+            if (props.myPageMode === 'dog') {
+                props.updateSelectedDogData()
+            }
+            // props.setCurrentMode('MyPage')
             props.setMyPageMode('myPage')
         } else {
             props.setMsg('Failed to upload the image.')
         }
     }
 
-    const handleClickUpload = async (e, updateObject) => {
-        e.preventDefault()
+    const handleClickUpload = async () => {
         let requestTo = null
-        if (updateObject === 'user') {
+        if (props.myPageMode === 'user') {
             requestTo = `users/${userData.id}`
         }
-        if (updateObject === 'dog') {
+        if (props.myPageMode === 'dog') {
             requestTo = `dogs/${dogData.id}`
+        }
+        if (requestTo === null) {
+            return
         }
         if (file !== null) {
             await uploadFileToServer(file, requestTo)
@@ -81,16 +96,16 @@ const ProfileUpload = () => {
             <div>
                 <button onClick={openModal}>open cropper</button>
                 <CropModal
-                    userData={userData}
+                    user={props.user}
                     uploadImage={uploadImage}
+                    myPageMode={props.myPageMode}
                     isModalOpen={isModalOpen}
                     setUploadImage={setUploadImage}
                     setFile={setFile}
                     closeModal={closeModal}
                 />
             </div>
-            <form onSubmit={handleClickUpload}>
-                {/* <form action={actionURI} method="post"> */}
+            <form onSubmit={(e) => { e.preventDefault(); handleClickUpload() }}>
                 <input
                     onChange={handleInputFileChange}
                     name="profileImage" type="file"

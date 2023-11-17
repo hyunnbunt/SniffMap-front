@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import Login from './components/Login'
+import Login from './components/Login/Login'
 import NavBar from './components/NavBar'
-import Neighbors from './components/Neighbors'
-import Events from './components/Events'
-import Friends from './components/Friends'
+import Neighbors from './components/Neighbors/Neighbors'
+import Events from './components/Events/Events'
+import Friends from './components/Friends/Friends'
 import MyPage from './components/MyPage/MyPage'
 
 const App = () => {
@@ -27,10 +27,10 @@ const App = () => {
     setCurrentMode(n)
   }
 
-  /* It updates the user data with the response of a new login request to the server. */
-  const updateUser = async (loginInput) => {
+  /* It updates the user data with the response of a new login request to the server. 
+  It doesn't update selectedDog. */
+  const updateUserData = async (loginInput) => {
     const loginURL = `${serverURL}/users/login`
-    console.log(loginInput)
     const res = await axios.post(loginURL, loginInput)
     if (res.status === 200) {
       setUser(
@@ -45,22 +45,20 @@ const App = () => {
       setCurrentMode('Login')
       return
     }
-    updateSelectedDog()
   }
 
-  const updateSelectedDog = async () => {
-    const dogRequestURL = `${serverURL}/dogs/${user.selectedDog.id}`
-    const res = await axios.get(dogRequestURL)
-    if (res.status === 200) {
-      setUser(
-        {
+  const updateSelectedDogData = () => {
+    if (user.userData === null) {
+      return
+    }
+    const selectedDogId = user.selectedDog.id
+    for (var dog in user.userData.dogs) {
+      if (dog.id === selectedDogId) {
+        setUser({
           ...user,
-          selectedDog: res.data
-        }
-      )
-    } else {
-      setLoginMsg('Error occured, please login again.')
-      setCurrentMode('Login')
+          selectedDog: dog
+        })
+      }
     }
   }
 
@@ -77,7 +75,7 @@ const App = () => {
       <Login
         user={user}
         setUser={setUser}
-        updateUser={updateUser}
+        updateUserData={updateUserData}
         loginMsg={loginMsg}
         serverURL={serverURL}
         setCurrentMode={setCurrentMode}
@@ -95,8 +93,10 @@ const App = () => {
     page =
       <Events
         user={user}
-        updateUser={updateUser}
+        updateUserData={updateUserData}
+        updateSelectedDogData={updateSelectedDogData}
         setCurrentMode={setCurrentMode}
+        serverURL={serverURL}
       />
   }
   if (currentMode === 'Friends') {
@@ -104,7 +104,8 @@ const App = () => {
       <Friends
         user={user}
         setUser={setUser}
-        updateUser={updateUser}
+        updateUserData={updateUserData}
+        updateSelectedDogData={updateSelectedDogData}
         setCurrentMode={setCurrentMode}
         serverURL={serverURL}
       />
@@ -114,7 +115,8 @@ const App = () => {
       <MyPage
         user={user}
         setUser={setUser}
-        updateUser={updateUser}
+        updateUserData={updateUserData}
+        updateSelectedDogData={updateSelectedDogData}
         setCurrentMode={setCurrentMode}
         serverURL={serverURL}
       />

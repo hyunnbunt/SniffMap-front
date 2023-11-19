@@ -12,14 +12,17 @@ const Events = (props) => {
     const [eventsMode, setEventsMode] = useState('myEvents')
     const [updated, setUpdated] = useState(false)
     const [eventCreateInfo, setEventCreateInfo] = useState({
-            date: today.getDate(),
-               time: today.getTime(),
-               latitude: null,
-               longitude:  null,
-               creatorDogId: props.user.selectedDog.id
-           })
+        date: today.getDate(),
+        time: today.getTime(),
+        latitude: null,
+        longitude: null,
+        creatorDogId: props.user.selectedDog.id
+    })
+    const [registeredEvntList, setRegisteredEvntList] = useState([])
 
     useEffect(() => {
+        setRegisteredEvntList(props.user.selectedDog.participatingEvents)
+        console.log(registeredEvntList)
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 setEventCreateInfo({
@@ -47,6 +50,7 @@ const Events = (props) => {
     }
 
     const handleSubmitLocation = (e) => {
+        console.log('locationSubmit')
         e.preventDefault()
         postEvents().then(
             () => {
@@ -56,9 +60,15 @@ const Events = (props) => {
     }
 
     const postEvents = async () => {
+        console.log(eventCreateInfo)
         const res = await axios.post(`${props.serverURL}/events`, eventCreateInfo)
+        console.log(res)
         if (res.status === 200) {
-            console.log(res.data)        
+            console.log(res.data)
+            setRegisteredEvntList([
+                ...registeredEvntList,
+                res.data
+            ])
             props.updateUserData(props.user.loginInfo)
         }
     }
@@ -72,18 +82,18 @@ const Events = (props) => {
             console.log(res)
             await props.updateSelectedDogData()
         }
-
     }
 
+
     if (eventsMode === 'myEvents') {
-        console.log(props.user.selectedDog.participatingEvents)
         return (
             <>
                 <h1>Events</h1>
-                {props.user.selectedDog.participatingEvents.map(eve =>
+                {registeredEvntList.map(evnt => <EventDetail evnt={evnt}/>)}
+                {/* {props.user.selectedDog.participatingEvents.map(eve =>
                     <EventDetail key={eve.id} e={eve} />
-                )}
-                <form onSubmit={() => setEventsMode('pickDate')}>  
+                )}  */}
+                <form onSubmit={() => setEventsMode('pickDate')}>
                     <button type='submit'>Add event</button>
                 </form>
             </>
@@ -103,11 +113,13 @@ const Events = (props) => {
 
     if (eventsMode === 'pickLocation') {
         return (
-            <form onSubmit={(e) => { handleSubmitLocation }}>
-                <GetLocation eventCreateInfo={eventCreateInfo} setEventCreateInfo={setEventCreateInfo} />
-                <button type='submit'>select location</button>
-            </form>
-           
+            <>
+                <form onSubmit={handleSubmitLocation}>
+                    <GetLocation eventCreateInfo={eventCreateInfo} setEventCreateInfo={setEventCreateInfo} />
+                    <button type='submit'>select location</button>
+                </form>
+            </>
+
         )
     }
 }

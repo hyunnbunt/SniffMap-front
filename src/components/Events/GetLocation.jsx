@@ -3,18 +3,30 @@ const { kakao } = window
 
 const GetLocation = ({ eventCreateInfo, setEventCreateInfo }) => {
 
-    const [clickedMarker, setClickedMarker] = useState(null)
+    const [prevMarker, setPrevMarker] = useState(null)
     const [message, setMessage] = useState('')
-
     const displayMarker = (eventMap, locPosition) => {
-        clickedMarker
 
         const marker = new kakao.maps.Marker({
             map: eventMap,
             position: locPosition
         })
+
+        setPrevMarker(marker)
+
+        // if (marker === null) {
+        //     marker = new kakao.maps.Marker({
+        //         map: eventMap,
+        //         position: locPosition
+        //     })
+        // }
+        // } else {
+        //     marker.n = locPosition
+        // }
+
+        console.log(marker.n.La)
         console.log(marker)
-        setClickedMarker(marker)
+        // setClickedMarker(marker)
         // const iwContent = message
         // const iwRemovable = true
         // const infoWindow = new kakao.maps.infoWindow({
@@ -22,39 +34,12 @@ const GetLocation = ({ eventCreateInfo, setEventCreateInfo }) => {
         //     removable: iwRemovable
         // })
         marker.setMap(eventMap)
+    
+
+
         // infoWindow.open(eventMap, marker)
         // kakaoMap.setCenter(locPosition)
     }
-
-    // kakao.maps.event.addListener(map, 'click', (mouseEvent) => {
-    //     const latlng = mouseEvent.LatLng
-    //     marker.setPosition(latlng)
-    //     setEventCreateInfo({ 
-    //         ...setEventCreateInfo,
-    //         lattitude: latlng.getLat(), 
-    //         longitude: latlng.getLng() 
-    //     })
-    //     const message = `The location is : lat(${latlng.getLat()}), lng(${latlng.getLng()})`
-    //     const resultDiv = document.getElementById('clickLatlng')
-    //     resultDiv.innerHTML = message;
-    // })
-
-
-
-
-    // const handleMapClick = (e) => {
-    //     console.log(mouseEvent)
-    //     const latlng = e.mouseEvent
-    //     clickedMarker.setPosition(latlng)
-    //     setEventCreateInfo({
-    //         ...setEventCreateInfo,
-    //         lattitude: latlng.getLat(),
-    //         longitude: latlng.getLng()
-    //     })
-    //     const message = `The location is : lat(${latlng.getLat()}), lng(${latlng.getLng()})`
-    //     const resultDiv = document.getElementById('clickLatlng')
-    //     resultDiv.innerHTML = message;
-    // }
 
     useEffect(() => {
         const container = document.getElementById('map')
@@ -66,6 +51,10 @@ const GetLocation = ({ eventCreateInfo, setEventCreateInfo }) => {
         const kakaoMap = new kakao.maps.Map(container, options)
 
         kakao.maps.event.addListener(kakaoMap, 'click', function (mouseEvent) {
+            if (prevMarker !== null) {
+                prevMarker.setMap(null)
+                console.log(prevMarker)
+            }
             const latlng = mouseEvent.latLng
             setEventCreateInfo({
                 ...eventCreateInfo,
@@ -78,11 +67,11 @@ const GetLocation = ({ eventCreateInfo, setEventCreateInfo }) => {
         })
 
         if (navigator.geolocation) {
-            console.log(clickedMarker)
             navigator.geolocation.getCurrentPosition((position) => {
                 const lat = position.coords.latitude
                 const lng = position.coords.longitude
                 const locPosition = new kakao.maps.LatLng(lat, lng)
+                console.log(locPosition)
                 bounds.extend(locPosition)
                 kakaoMap.setBounds(bounds)
                 setMessage(`Are you here? lat: ${lat}, lng: ${lng}`)

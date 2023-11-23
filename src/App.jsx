@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, createContext } from 'react'
 import axios from 'axios'
 import Login from './components/Login/Login'
 import NavBar from './components/NavBar'
@@ -6,6 +6,8 @@ import Neighbors from './components/Neighbors/Neighbors'
 import Events from './components/Events/Events'
 import Friends from './components/Friends/Friends'
 import MyPage from './components/MyPage/MyPage'
+
+export const AppContext = createContext()
 
 const App = () => {
 
@@ -47,10 +49,11 @@ const App = () => {
     }
   }
 
-  const updateSelectedDogData = () => {
+  const updateSelectedDogData = async () => {
     if (user.userData === null) {
       return
     }
+    await updateUserData()
     const selectedDogId = user.selectedDog.id
     for (var dog in user.userData.dogs) {
       if (dog.id === selectedDogId) {
@@ -124,13 +127,21 @@ const App = () => {
 
   return (
     <>
-      <NavBar
+      <AppContext.Provider
+        user={user}
+        setUser={setUser}
+        updateUserData={updateUserData}
+        updateSelectedDogData={updateSelectedDogData}
+        setCurrentMode={setCurrentMode}
+        serverURL={serverURL}
         mode={mode}
         handleClicks={handleNavbarClicks}
-      />
-      <div>
-        {page}
-      </div>
+      >
+        <NavBar/>
+        <div>
+          {page}
+        </div>
+      </AppContext.Provider>
     </>
   )
 }

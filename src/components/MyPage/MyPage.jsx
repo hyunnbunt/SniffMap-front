@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import UserUpdate from './UserUpdate'
 import DogUpdate from './DogUpdate'
+import './img.css'
 
 const MyPage = (props) => {
 
@@ -10,8 +11,7 @@ const MyPage = (props) => {
     const [msg, setMsg] = useState('')
 
     useEffect(() => {
-        console.log('lll')
-        setMyPageMode('myPage')
+        // setMyPageMode('myPage')
         setMsg('')
     }, [])
 
@@ -35,14 +35,14 @@ const MyPage = (props) => {
             <>
                 <h1>This is My Page.</h1>
                 <div>
-                    <img src={props.user.userData.profileImageURL} style={{ width: '120px' }} />
+                    <img className='radius' src={props.user.userData.profileImageURL}  />
                     <button onClick={() => setMyPageMode('user')}>update profile image</button>
                     <h2>{props.user.userData.email}</h2>
                     <h2>username : {props.user.userData.name}</h2>
                 </div>
                 <div>
                     <h2>{props.user.selectedDog.name}</h2>
-                    <img src={props.user.selectedDog.dogProfileImageURL} style={{ width: '120px' }} />
+                    <img className='radius' src={props.user.selectedDog.dogProfileImageURL} />
                     <button onClick={() => setMyPageMode('dog')}>update your dog's profile image</button>
                 </div>
                 <button onClick={handleClickLogOut}>Logout</button>

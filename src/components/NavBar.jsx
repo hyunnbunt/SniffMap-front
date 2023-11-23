@@ -1,9 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { AppContext } from '../App'
 
-const NavBar = ({handleClicks, mode}) => {
+const NavBar = () => {
   return (
     <>
-      {mode.map(m => <button key={m} onClick={() => handleClicks(m)}>{m}</button>)}
+      <AppContext.Consumer>
+        {(handleClicks, mode) => (
+          mode.map(m => <button key={m} onClick={() => handleClicks(m)}>{m}</button>)
+        )}
+      </AppContext.Consumer>
     </>
   )
 }

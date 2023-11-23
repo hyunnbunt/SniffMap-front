@@ -1,0 +1,10 @@
+.cropper-view-box {
+	border-radius: 50%;
+}
+.cropper-face {
+	background-color:inherit !important;
+}
+
+.cropper-dashed {
+	display: none;
+}

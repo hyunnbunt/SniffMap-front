@@ -5,7 +5,7 @@ import NeighborDogsKakaoMap from './NeighborDogsKakaoMap'
 
 const Neighbors = (props) => {
 
-  const dog = props.user.dogs[props.selectedDogIndex]
+  const dog = props.user.selectedDog
   
   return (
     <>

@@ -6,8 +6,6 @@ const FriendLocationKakaoMap = ({dog}) => {
   // const [kakaoMap, setKakaoMap] = useState(null)
   const [setBounds, setSetBounds] = useState(null)
 
-  const baseURL = 'http://localhost:8080/'
-
   const getPosition = (dog) => {
     if (dog.walkLocations.length === 0) {
       return

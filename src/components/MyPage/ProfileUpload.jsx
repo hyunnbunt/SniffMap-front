@@ -52,10 +52,10 @@ const ProfileUpload = (props) => {
         console.log(res)
         if (res.status === 200) {
             if (props.myPageMode === 'user') {
-                props.updateUserData(props.user.loginInfo)
+                await props.updateUserData(props.user.loginInfo)
             }
             if (props.myPageMode === 'dog') {
-                props.updateSelectedDogData()
+                await props.updateSelectedDogData()
             }
             // props.setCurrentMode('MyPage')
             props.setMyPageMode('myPage')
@@ -90,8 +90,8 @@ const ProfileUpload = (props) => {
         <>
             <img
                 src={uploadImage}
-                style={{ width: '120px' }}
-                alt="preview"
+                alt='preview'
+                className='radius'
             />
             <div>
                 <button onClick={openModal}>open cropper</button>
@@ -108,7 +108,7 @@ const ProfileUpload = (props) => {
             <form onSubmit={(e) => { e.preventDefault(); handleClickUpload() }}>
                 <input
                     onChange={handleInputFileChange}
-                    name="profileImage" type="file"
+                    name='profileImage' type='file'
                 /><br />
                 <button type="submit">upload</button>
             </form>

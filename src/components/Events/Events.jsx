@@ -15,7 +15,7 @@ const Events = (props) => {
         date: today.getDate(),
         time: today.getTime(),
         latitude: null,
-        longitude: null,
+        longitude: null, 
         creatorDogId: props.user.selectedDog.id
     })
     const [registeredEvntList, setRegisteredEvntList] = useState([])
@@ -73,23 +73,11 @@ const Events = (props) => {
         }
     }
 
-    const handleSubmitDate2 = async (e) => {
-        e.preventDefault()
-
-        const res = await axios.post(`${props.serverURL}/events`, eventCreateInfo)
-
-        if (res.status === 200) {
-            console.log(res)
-            await props.updateSelectedDogData()
-        }
-    }
-
-
     if (eventsMode === 'myEvents') {
         return (
             <>
                 <h1>Events</h1>
-                {registeredEvntList.map(evnt => <EventDetail evnt={evnt}/>)}
+                {registeredEvntList.map(evnt => <EventDetail key={evnt.id} evnt={evnt}/>)}
                 {/* {props.user.selectedDog.participatingEvents.map(eve =>
                     <EventDetail key={eve.id} e={eve} />
                 )}  */}

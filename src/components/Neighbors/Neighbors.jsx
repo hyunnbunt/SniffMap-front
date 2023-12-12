@@ -1,11 +1,14 @@
 import React from 'react'
-import { useEffect } from 'react'
+import { useContext } from 'react'
 import FriendLocationKakaoMap from './FriendLocationKakaoMap'
 import NeighborDogsKakaoMap from './NeighborDogsKakaoMap'
+import { AppContext } from '../../App'
 
-const Neighbors = (props) => {
+const Neighbors = () => {
 
-  const dog = props.user.selectedDog
+  const values = useContext(AppContext)
+
+  const dog = values.getDog()
   
   return (
     <>

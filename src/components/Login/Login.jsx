@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import LoginForm from './LoginForm'
 import DogsList from './DogsList'
+import { AppContext } from '../../App'
 
 const Login = (props) => {
-
-    const [loginInput, setLoginInput] = useState({email: '', pw:''})
+    const values = useContext(AppContext)
+    const [loginInput, setLoginInput] = useState({ email: '', pw: '' })
 
     /* It runs when the login input changes. */
     const handleLoginInputChange = (e) => {
@@ -16,30 +17,36 @@ const Login = (props) => {
     }
 
     /* It runs when the user clicks the login button. */
-    const handleLoginSubmit = (e) => {
+    const handleLoginSubmit = async (e) => {
         // Block the page to get reloaded.
         e.preventDefault()
-        props.updateUserData(loginInput)
+        values.login(loginInput)
+        // const userData = await values.requestLogin(loginInput)
+        // if (userData !== null) {
+
+        //     values.updateUserData(userData)
+        // }
     }
 
-    if (props.user.userData === null) {
+    if (values.user.userData === null) {
         return (
             <LoginForm
                 loginInput={loginInput}
                 handleLoginSubmit={handleLoginSubmit}
                 handleLoginInputChange={handleLoginInputChange}
-                setCurrentMode={props.setCurrentMode}
+                setCurrentMode={values.setCurrentMode}
                 loginMsg={props.loginMsg}
             />
         )
     }
     return (
         <DogsList
-            user={props.user}
-            setUser={props.setUser}
-            setCurrentMode={props.setCurrentMode}
+            user={values.user}
+            setUser={values.setUser}
+            setCurrentMode={values.setCurrentMode}
         />
     )
+
 
 }
 

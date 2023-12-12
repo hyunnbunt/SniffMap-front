@@ -1,32 +1,36 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import axios from 'axios'
 import FriendDetail from './FriendDetail'
+import { AppContext } from '../../App'
 
-const Friends = (props) => {
+const Friends = () => {
 
     const [selectedFriend, setSelectedFriend] = useState(null)
     const [msg, setMsg] = useState('')
 
+    const values = useContext(AppContext)
+    const dog = values.getDog()
+    console.log(dog)
+    
     const removeFromFriendsList = async (friend) => {
         const res =
             await axios.patch(
-                `${props.serverURL}/dogs/${props.user.selectedDog.id}/cancel-friend`,
+                `${values.serverURL}/dogs/${dog.id}/cancel-friend`,
                 { friendId: friend.id }
             )
         console.log(res)
         if (res.status === 200) {
-            props.updateSelectedDogData()
+            values.updateUserData(res.data, values.user.loginInfo)
         } else {
             setMsg('Can\'t update your friends list. Pleast try again.')
         }
-        props.updateUserData(props.user.loginInfo)
     }
 
     return (
         <>
             <h1>This is Friends Page.</h1>
-            <h2>{props.user.selectedDog.name}'s friends :</h2>
-            {props.user.selectedDog.friends.map(friend =>
+            <h2>{dog.name}'s friends :</h2>
+            {dog.friends.map(friend =>
                 <div key={friend.id}>
                     <h3 >
                         {friend.name}

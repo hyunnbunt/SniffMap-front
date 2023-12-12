@@ -16,9 +16,9 @@ const App = () => {
   const [loginMsg, setLoginMsg] = useState('')
   const [user, setUser] = useState(
     {
-      loginInfo: { email: '', pw: '' },
+      loginInfo: null,
       userData: null,
-      selectedDog: null,
+      selectedDogId: null,
       loggedOut: false
     }
   )
@@ -29,40 +29,65 @@ const App = () => {
     setCurrentMode(n)
   }
 
-  /* It updates the user data with the response of a new login request to the server. 
-  It doesn't update selectedDog. */
-  const updateUserData = async (loginInput) => {
-    const loginURL = `${serverURL}/users/login`
-    const res = await axios.post(loginURL, loginInput)
-    if (res.status === 200) {
-      setUser(
-        {
-          ...user,
-          loginInfo: loginInput,
-          userData: res.data,
-        }
-      )
-    } else {
-      setLoginMsg('Error occured, please login again.')
-      setCurrentMode('Login')
-      return
+  const updateUserData = (userData, loginInput) => {
+    if (loginInput === null || loginInput === undefined) {
+      user.loggedOut = true
+      setUser(null)
+      setLoginMsg("Wrong access. Login again.")
+      setCurrentMode("Login")
+    }
+    if (user.loginInfo.email === loginInput.email && user.loginInfo.pw === loginInput.pw) {
+      setUser({
+        ...user,
+        userData: userData
+      })
     }
   }
 
-  const updateSelectedDogData = async () => {
-    if (user.userData === null) {
-      return
+  const loginRequestToServer = async (loginInfo) => {
+    const loginURL = `${serverURL}/users/login`
+    const res = await axios.post(loginURL, loginInfo)
+    if (res.status === 200) {
+      return res.data
     }
-    await updateUserData()
-    const selectedDogId = user.selectedDog.id
-    for (var dog in user.userData.dogs) {
-      if (dog.id === selectedDogId) {
-        setUser({
-          ...user,
-          selectedDog: dog
-        })
-      }
+    return null
+  }
+
+  const loginError = () => {
+    setLoginInfo({
+      email: '',
+      pw: ''
+    })
+    setLoginMsg('Error')
+    setCurrentMode('Login')
+  }
+
+  const login = async (loginInput) => {
+    const response = await loginRequestToServer(loginInput)
+    console.log(loginInput)
+    if (response !== null) {
+      setUser({
+        ...user,
+        loginInfo: loginInput,
+        userData: response
+      })
+    } else {
+      loginError()
     }
+  }
+
+  const updateUser = async () => {
+    const response = await loginRequestToServer(user.loginInfo)
+    if (response !== null) {
+      updateUserData(response, user.loginInfo)
+      return true
+    } 
+    return false
+  }
+
+  const getDog = () => {
+    console.log(user)
+    return user.userData.dogs.find(dog=> dog.id === user.selectedDogId)
   }
 
   let page = null
@@ -75,73 +100,35 @@ const App = () => {
 
   if (currentMode === 'Login') {
     page =
-      <Login
-        user={user}
-        setUser={setUser}
-        updateUserData={updateUserData}
-        loginMsg={loginMsg}
-        serverURL={serverURL}
-        setCurrentMode={setCurrentMode}
-      />
+      <Login loginMsg={loginMsg}/>
   }
   if (currentMode === 'Neighbors') {
     page =
-      <Neighbors
-        user={user}
-        serverURL={serverURL}
-        setCurrentMode={setCurrentMode}
-      />
+      <Neighbors/>
   }
   if (currentMode === 'Events') {
     page =
-      <Events
-        user={user}
-        updateUserData={updateUserData}
-        updateSelectedDogData={updateSelectedDogData}
-        setCurrentMode={setCurrentMode}
-        serverURL={serverURL}
-      />
+      <Events/>
   }
   if (currentMode === 'Friends') {
     page =
-      <Friends
-        user={user}
-        setUser={setUser}
-        updateUserData={updateUserData}
-        updateSelectedDogData={updateSelectedDogData}
-        setCurrentMode={setCurrentMode}
-        serverURL={serverURL}
-      />
+      <Friends/>
   }
   if (currentMode === 'MyPage') {
     page =
-      <MyPage
-        user={user}
-        setUser={setUser}
-        updateUserData={updateUserData}
-        updateSelectedDogData={updateSelectedDogData}
-        setCurrentMode={setCurrentMode}
-        serverURL={serverURL}
-      />
+      <MyPage/>
   }
 
   return (
     <>
-      <AppContext.Provider
-        user={user}
-        setUser={setUser}
-        updateUserData={updateUserData}
-        updateSelectedDogData={updateSelectedDogData}
-        setCurrentMode={setCurrentMode}
-        serverURL={serverURL}
-        mode={mode}
-        handleClicks={handleNavbarClicks}
-      >
-        <NavBar/>
-        <div>
+
+      <NavBar mode={mode} handleClicks={handleNavbarClicks} />
+      <div>
+        <AppContext.Provider value={{ serverURL, user, getDog, login, updateUserData, updateUser, setCurrentMode, setUser, requestLogin: loginRequestToServer }}>
           {page}
-        </div>
-      </AppContext.Provider>
+        </AppContext.Provider>
+      </div>
+
     </>
   )
 }

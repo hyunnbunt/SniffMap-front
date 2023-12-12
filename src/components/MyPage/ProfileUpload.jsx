@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 import CropModal from './CropModal'
+import { AppContext } from '../../App'
 
-const ProfileUpload = (props) => {
+const ProfileUpload = ({myPageMode, setMyPageMode, setUserProfileImg, setDogProfileImg}) => {
 
-    const userData = props.user.userData
-    const dogData = props.user.selectedDog
+    const values = useContext(AppContext)
+
+    const user = values.user.userData
+    const dog = values.getDog()
 
     let img = null
-    if (props.myPageMode === 'user') {
-        img = userData.profileImageURL
+    if (myPageMode === 'user') {
+        img = user.profileImageURL
     }
-    if (props.myPageMode === 'dog') {
-        img = dogData.dogProfileImageURL
+    if (myPageMode === 'dog') {
+        img = dog.dogProfileImageURL
     }
 
     const [file, setFile] = useState(null)
@@ -39,7 +42,7 @@ const ProfileUpload = (props) => {
     }
 
     const uploadFileToServer = async (imgFile, requestTo) => {
-        const postURL = `${props.serverURL}/${requestTo}/upload-profile`
+        const postURL = `${values.serverURL}/${requestTo}/upload-profile`
         const imgFormData = new FormData()
         imgFormData.append('imageFile', imgFile, imgFile.name)
         imgFormData.append('uploadFileName', imgFile.name)
@@ -51,26 +54,27 @@ const ProfileUpload = (props) => {
         const res = await axios.post(postURL, imgFormData, config)
         console.log(res)
         if (res.status === 200) {
-            if (props.myPageMode === 'user') {
-                await props.updateUserData(props.user.loginInfo)
+            values.updateUserData(res.data)
+            if (myPageMode === 'user') {
+                setUserProfileImg(res.data.profileImageURL)
             }
-            if (props.myPageMode === 'dog') {
-                await props.updateSelectedDogData()
+            if (myPageMode === 'dog') {
+                console.log(res.data)
+                setDogProfileImg(res.data.dogProfileImageURL)
             }
-            // props.setCurrentMode('MyPage')
-            props.setMyPageMode('myPage')
+            setMyPageMode('myPage')
         } else {
-            props.setMsg('Failed to upload the image.')
+            values.setMsg('Failed to upload the image.')
         }
     }
 
     const handleClickUpload = async () => {
         let requestTo = null
-        if (props.myPageMode === 'user') {
-            requestTo = `users/${userData.id}`
+        if (myPageMode === 'user') {
+            requestTo = `users/${user.id}`
         }
-        if (props.myPageMode === 'dog') {
-            requestTo = `dogs/${dogData.id}`
+        if (myPageMode === 'dog') {
+            requestTo = `dogs/${dog.id}`
         }
         if (requestTo === null) {
             return
@@ -96,9 +100,9 @@ const ProfileUpload = (props) => {
             <div>
                 <button onClick={openModal}>open cropper</button>
                 <CropModal
-                    user={props.user}
+                    user={values.user}
                     uploadImage={uploadImage}
-                    myPageMode={props.myPageMode}
+                    myPageMode={myPageMode}
                     isModalOpen={isModalOpen}
                     setUploadImage={setUploadImage}
                     setFile={setFile}

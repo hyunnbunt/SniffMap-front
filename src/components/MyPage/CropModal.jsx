@@ -9,6 +9,7 @@ const CropModal = (props) => {
 
     const [cropperData, setCropperData] = useState(null)
     
+    
     const croppedImageToFile = async (cropImageURL) => {
         const img = await fetch(cropImageURL)
         const imgData = await img.blob()

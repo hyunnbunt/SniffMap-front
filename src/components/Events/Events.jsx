@@ -1,27 +1,30 @@
 import React from 'react'
 import axios from 'axios'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import GetLocation from './GetLocation'
 import EventDetail from './EventDetail'
+import { AppContext } from '../../App'
 
 const Events = (props) => {
 
+    const values = useContext(AppContext)
+
     const today = new Date()
     const [eventsMode, setEventsMode] = useState('myEvents')
-    const [updated, setUpdated] = useState(false)
+    // const [updated, setUpdated] = useState(false)
     const [eventCreateInfo, setEventCreateInfo] = useState({
         date: today.getDate(),
         time: today.getTime(),
         latitude: null,
         longitude: null, 
-        creatorDogId: props.user.selectedDog.id
+        creatorDogId: values.user.selectedDogId
     })
     const [registeredEvntList, setRegisteredEvntList] = useState([])
 
     useEffect(() => {
-        setRegisteredEvntList(props.user.selectedDog.participatingEvents)
+        setRegisteredEvntList(values.getDog().participatingEvents)
         console.log(registeredEvntList)
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
@@ -61,15 +64,14 @@ const Events = (props) => {
 
     const postEvents = async () => {
         console.log(eventCreateInfo)
-        const res = await axios.post(`${props.serverURL}/events`, eventCreateInfo)
-        console.log(res)
+        const res = await axios.post(`${values.serverURL}/events`, eventCreateInfo)
         if (res.status === 200) {
             console.log(res.data)
             setRegisteredEvntList([
                 ...registeredEvntList,
                 res.data
             ])
-            props.updateUserData(props.user.loginInfo)
+            values.updateUser(values.user.loginInfo)
         }
     }
 

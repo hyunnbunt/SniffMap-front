@@ -8,13 +8,9 @@ const UpdateUserPage = (props) => {
         <>
             <h1>Upload user profile.</h1>
             <ProfileUpload
-                user={props.user}
-                setUser={props.setUser}
                 myPageMode={props.myPageMode}
-                serverURL={props.serverURL}
-                updateUserData={props.updateUserData}
                 setMyPageMode={props.setMyPageMode}
-                setCurrentMode={props.setCurrentMode}
+                setUserProfileImg={props.setUserProfileImg}
             />
         </>
     )

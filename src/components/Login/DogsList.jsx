@@ -7,14 +7,14 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 const DogsList = (props) => {
 
     const [title, setTitle] = useState('choose one of your dogs')
-    console.log(props.user.userData)
     const dogs = props.user.userData.dogs
-    console.log(dogs)
+
+    console.log(props.user)
 
     const handleDogSelect = (eventKey) => {
         props.setUser({
             ...props.user,
-            selectedDog: dogs[eventKey]
+            selectedDogId: dogs[eventKey].id
         })
         setTitle(dogs[eventKey].name)
     }

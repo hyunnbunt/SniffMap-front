@@ -10,16 +10,8 @@ export const NeighborsContext = createContext()
 const Neighbors = () => {
   const [msg, setMsg] = useState('')
   const [setBounds, setSetBounds] = useState(null)
-  
-  const getPosition = (dog) => {
-    if (dog.walkLocations.length === 0) {
-      return null
-    }
-    return { title: dog.name, lat: dog.walkLocations[0].latitude, lng: dog.walkLocations[0].longitude }
-  }
 
   const getKakaoLatLng = (position) => {
-    console.log(position.latitude, position.longitude)
     return new kakao.maps.LatLng(position.latitude, position.longitude)
   }
 
@@ -85,7 +77,7 @@ const Neighbors = () => {
               {/* <FriendLocationKakaoMap dog={dog} />
         <h1>Your neighbor dogs walk here:</h1>
         <NeighborDogsKakaoMap dog={dog} /> */}
-      <NeighborsContext.Provider value={{getPosition, drawDogMarker, drawMapAndMarkers, getKakaoLatLng, drawMap, makeMarkers, getMarkerImage}}>
+      <NeighborsContext.Provider value={{drawDogMarker, drawMapAndMarkers, getKakaoLatLng, drawMap, makeMarkers, getMarkerImage}}>
         <FriendsMap />
       </NeighborsContext.Provider>
      

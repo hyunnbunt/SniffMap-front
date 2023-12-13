@@ -14,6 +14,7 @@ const App = () => {
   /* Don't put component in state! */
   const [currentMode, setCurrentMode] = useState('Login')
   const [loginMsg, setLoginMsg] = useState('')
+  const [myDog, setMyDog] = useState(null)
   const [user, setUser] = useState(
     {
       loginInfo: null,
@@ -46,25 +47,30 @@ const App = () => {
 
   const loginRequestToServer = async (loginInfo) => {
     const loginURL = `${serverURL}/users/login`
-    const res = await axios.post(loginURL, loginInfo)
-    if (res.status === 200) {
+    try {
+      const res = await axios.post(loginURL, loginInfo)
       return res.data
+    } catch (error) {
+      console.log(error.response)
+      return null
     }
-    return null
+   
   }
 
   const loginError = () => {
-    setLoginInfo({
-      email: '',
-      pw: ''
+    setUser({
+      ...user, 
+      loginInfo: {
+        email: '',
+        pw: ''
+      }
     })
-    setLoginMsg('Error')
+    setLoginMsg('Wrong email or password, try again.')
     setCurrentMode('Login')
   }
 
   const login = async (loginInput) => {
     const response = await loginRequestToServer(loginInput)
-    console.log(loginInput)
     if (response !== null) {
       setUser({
         ...user,
@@ -124,7 +130,7 @@ const App = () => {
 
       <NavBar mode={mode} handleClicks={handleNavbarClicks} />
       <div>
-        <AppContext.Provider value={{ serverURL, user, getDog, login, updateUserData, updateUser, setCurrentMode, setUser, requestLogin: loginRequestToServer }}>
+        <AppContext.Provider value={{ serverURL, user, myDog, setMyDog, getDog, login, updateUserData, updateUser, setCurrentMode, setUser, requestLogin: loginRequestToServer }}>
           {page}
         </AppContext.Provider>
       </div>

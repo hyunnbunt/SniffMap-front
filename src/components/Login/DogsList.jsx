@@ -1,22 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import DogRegistration from './DogRegistration'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { AppContext } from '../../App'
+
 
 const DogsList = (props) => {
 
+    const appContext = useContext(AppContext)
     const [title, setTitle] = useState('choose one of your dogs')
     const dogs = props.user.userData.dogs
 
     console.log(props.user)
+    console.log(dogs)
 
     const handleDogSelect = (eventKey) => {
+        const myDog = dogs[eventKey]
         props.setUser({
             ...props.user,
-            selectedDogId: dogs[eventKey].id
+            selectedDogId: myDog.id
         })
         setTitle(dogs[eventKey].name)
+        appContext.setMyDog(myDog)
     }
 
     /* If the user selects a dog, present 'Friends' tab. */

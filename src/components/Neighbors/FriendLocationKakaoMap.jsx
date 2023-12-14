@@ -6,11 +6,8 @@ const { kakao } = window
 const FriendLocationKakaoMap = ({dog}) => {
   const values = useContext(NeighborsContext)
   
-  const getFriendsMarkerPositions = (dog) => {
-    const myPosition = values.getPosition(dog)
-    const friendsPosition =  dog.friends.map(values.getPosition)
-    return [myPosition, ...friendsPosition]
-  }
+
+  const [setBounds, setSetBounds] = useState(null)
 
   useEffect(() => {
     const markerPositions = getFriendsMarkerPositions(dog)

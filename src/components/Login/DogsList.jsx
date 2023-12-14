@@ -21,8 +21,7 @@ const DogsList = (props) => {
             ...props.user,
             selectedDogId: myDog.id
         })
-        setTitle(dogs[eventKey].name)
-        appContext.setMyDog(myDog)
+        setTitle(myDog.name)
     }
 
     /* If the user selects a dog, present 'Friends' tab. */

@@ -14,7 +14,6 @@ const App = () => {
   /* Don't put component in state! */
   const [currentMode, setCurrentMode] = useState('Login')
   const [loginMsg, setLoginMsg] = useState('')
-  const [myDog, setMyDog] = useState(null)
   const [user, setUser] = useState(
     {
       loginInfo: null,
@@ -130,7 +129,7 @@ const App = () => {
 
       <NavBar mode={mode} handleClicks={handleNavbarClicks} />
       <div>
-        <AppContext.Provider value={{ serverURL, user, myDog, setMyDog, getDog, login, updateUserData, updateUser, setCurrentMode, setUser, requestLogin: loginRequestToServer }}>
+        <AppContext.Provider value={{ serverURL, user, serverURL, getDog, login, updateUserData, updateUser, setCurrentMode, setUser, requestLogin: loginRequestToServer }}>
           {page}
         </AppContext.Provider>
       </div>

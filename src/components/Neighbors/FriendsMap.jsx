@@ -1,32 +1,36 @@
 import React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { NeighborsContext } from './Neighbors'
-import { AppContext } from '../../App'
 
-const FriendsMap = () => {
-    const appContext = useContext(AppContext)
-    const nContext = useContext(NeighborsContext)
-    const myDog = appContext.myDog
+const FriendsMap = ({myDog}) => {
+    const neighborsContext = useContext(NeighborsContext)
+    const [setBounds, setSetBounds] = useState(null)
 
-    // const getFriendsMarkers = (myDog) => {
-    //     const myPosition = values.getPosition(myDog)
-    //     const friendsPosition =  dog.friends.map(values.g    etPosition)
-    //     return [myPosition, ...friendsPosition]
-    // }
+    const extendBounds = (map, bounds, markerPosition) => {
+        bounds.extend(markerPosition)
+        setSetBounds(map.setBounds(bounds))
+    }
 
     useEffect(() => {
-        const container = document.getElementById('map')
-        const kakaoMap = nContext.drawMap(container)
+        const container = document.getElementById('friendsMap')
+        const centerPosition = neighborsContext.getFirstWalkLocation(myDog)
+        const kakaoMap = neighborsContext.drawMap(container, centerPosition)
         const bounds = new kakao.maps.LatLngBounds()
-        nContext.drawDogMarker(myDog, kakaoMap, bounds)
-        for (let friend in myDog.friends) {
-            nContext.drawDogMarker(kakaoMap, friend)
+        const centerTitle = myDog.name
+        const centerMarkerInfo = neighborsContext.drawLocationMarker(centerPosition, centerTitle, kakaoMap)
+        extendBounds(kakaoMap, bounds, centerMarkerInfo.position)
+        console.log(myDog.friends)
+        for (let friend of myDog.friends) {
+            const location = neighborsContext.getFirstWalkLocation(friend)
+            const title = friend.name
+            const markerInfo = neighborsContext.drawLocationMarker(location, title, kakaoMap)
+            extendBounds(kakaoMap, bounds, markerInfo.position)
         }
     }, [])
 
     return (
         <>
-            <div id='map' style={{ width: '500px', height: '400px' }}></div>
+            <div id='friendsMap' style={{ width: '500px', height: '400px' }}></div>
         </>
     )
 }

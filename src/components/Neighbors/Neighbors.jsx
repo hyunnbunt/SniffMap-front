@@ -45,12 +45,6 @@ const Neighbors = () => {
     infoWindow.open(map, marker)
   }
 
-  const getMarkerContainerImg = () => {
-    const containerImgSrc = 'https://firebasestorage.googleapis.com/v0/b/bunt-project-404405.appspot.com/o/marker_red_circle_.png?alt=media&token=6c65d7b1-17e6-4172-a4c6-36d406529a7f'
-    const imageSize = new kakao.maps.Size(40, 40)
-    return new kakao.maps.MarkerImage(containerImgSrc, imageSize)
-  }
-
   const getMarkerInsideImg = (src) => {
     let imgSrc = src
     if (imgSrc === null || imgSrc === undefined || imgSrc === '') {

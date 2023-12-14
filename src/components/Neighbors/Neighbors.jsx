@@ -20,24 +20,44 @@ const Neighbors = () => {
     return new kakao.maps.Map(container, options)
   }
 
-  const drawLocationMarker = (location, title, map, bounds) => {
+  const drawLocationMarker = (location, dog, map) => {
+
     const markerInfo = {
       map: map,
       position: getKakaoLatLng(location),
-      title: title,
-      image: getMarkerImage()
+      title: dog.name,
+      image: getMarkerInsideImg(dog.dogProfileImageURL)
     }
     const marker = new kakao.maps.Marker(markerInfo)
     marker.setMap(map)
     return markerInfo
   }
 
-  const getMarkerImage = (src) => {
+  const showInfoWindow = (map, marker, markerInfo, dog) => {
+    const iwPosition = markerInfo.position
+    const greetingMsg = `Hello. I walk here!`
+    const iwContent = `<div style={{padding : '5px'}}>${greetingMsg}</div>`
+    const infoWindow = new kakao.maps.InfoWindow({
+      position : iwPosition,
+      content : iwContent
+    })
+    console.log(infoWindow)
+    infoWindow.open(map, marker)
+  }
+
+  const getMarkerContainerImg = () => {
+    const containerImgSrc = 'https://firebasestorage.googleapis.com/v0/b/bunt-project-404405.appspot.com/o/marker_red_circle_.png?alt=media&token=6c65d7b1-17e6-4172-a4c6-36d406529a7f'
+    const imageSize = new kakao.maps.Size(40, 40)
+    return new kakao.maps.MarkerImage(containerImgSrc, imageSize)
+  }
+
+  const getMarkerInsideImg = (src) => {
     let imgSrc = src
-    if (imgSrc === null || imgSrc === undefined) {
-      imgSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"
+    if (imgSrc === null || imgSrc === undefined || imgSrc === '') {
+      // imgSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"
+      imgSrc = 'https://firebasestorage.googleapis.com/v0/b/bunt-project-404405.appspot.com/o/default-dog-profile.jpg?alt=media&token=a032e37e-c5f6-44ca-a44f-765609bc7fc7'
     }
-    const imageSize = new kakao.maps.Size(24, 35)
+    const imageSize = new kakao.maps.Size(24, 24)
     return new kakao.maps.MarkerImage(imgSrc, imageSize)
   }
 

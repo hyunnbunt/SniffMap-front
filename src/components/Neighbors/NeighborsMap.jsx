@@ -25,14 +25,12 @@ const NeighborsMap = ({myDog}) => {
         const centerPosition = neighborsContext.getFirstWalkLocation(myDog)
         const kakaoMap = neighborsContext.drawMap(container, centerPosition)
         const bounds = new kakao.maps.LatLngBounds()
-        const centerTitle = myDog.name
-        const centerMarkerInfo = neighborsContext.drawLocationMarker(centerPosition, centerTitle, kakaoMap)
+        const centerMarkerInfo = neighborsContext.drawLocationMarker(centerPosition, myDog, kakaoMap)
         extendBounds(kakaoMap, bounds, centerMarkerInfo.position)
         const neighborsPromise = getAllNeighbors()
         neighborsPromise.then(neighbors => {
             for (let neighbor of neighbors) {
-                const title = neighborsContext.getFirstWalkingDog(neighbor).name
-                const markerInfo = neighborsContext.drawLocationMarker(neighbor, title, kakaoMap)
+                const markerInfo = neighborsContext.drawLocationMarker(neighbor, neighborsContext.getFirstWalkingDog(neighbor), kakaoMap)
                 extendBounds(kakaoMap, bounds, markerInfo.position)
             }
         })

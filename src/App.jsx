@@ -50,8 +50,7 @@ const App = () => {
       const res = await axios.post(loginURL, loginInfo)
       return res.data
     } catch (error) {
-      console.log(error.response)
-      return null
+      throw new Error(error.response)
     }
    
   }
@@ -83,7 +82,7 @@ const App = () => {
 
   const updateUser = async () => {
     const response = await loginRequestToServer(user.loginInfo)
-    if (response !== null) {
+    if (response !== null) { 
       updateUserData(response, user.loginInfo)
       return true
     } 

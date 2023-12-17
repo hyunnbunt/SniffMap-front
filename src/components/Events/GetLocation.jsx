@@ -3,7 +3,7 @@ const { kakao } = window
 
 const GetLocation = ({ eventCreateInfo, setEventCreateInfo }) => {
 
-    const [prevMarker, setPrevMarker] = useState(null)
+    const [currMarker, setCurrMarker] = useState(null)
     const [message, setMessage] = useState('')
     const displayMarker = (eventMap, locPosition) => {
 
@@ -12,8 +12,17 @@ const GetLocation = ({ eventCreateInfo, setEventCreateInfo }) => {
             position: locPosition
         })
 
-        setPrevMarker(marker)
+        
 
+
+
+
+        marker.setMap(eventMap)
+
+        if (currMarker !== null) {
+            currMarker.setMap(null)
+            setCurrMarker(null)
+        }
         // if (marker === null) {
         //     marker = new kakao.maps.Marker({
         //         map: eventMap,
@@ -24,8 +33,6 @@ const GetLocation = ({ eventCreateInfo, setEventCreateInfo }) => {
         //     marker.n = locPosition
         // }
 
-        console.log(marker.n.La)
-        console.log(marker)
         // setClickedMarker(marker)
         // const iwContent = message
         // const iwRemovable = true
@@ -33,7 +40,7 @@ const GetLocation = ({ eventCreateInfo, setEventCreateInfo }) => {
         //     content: iwContent,
         //     removable: iwRemovable
         // })
-        marker.setMap(eventMap)
+
     
 
 
@@ -41,19 +48,11 @@ const GetLocation = ({ eventCreateInfo, setEventCreateInfo }) => {
         // kakaoMap.setCenter(locPosition)
     }
 
-    useEffect(() => {
-        const container = document.getElementById('map')
-        const options = {
-            center: new kakao.maps.LatLng(33.450701, 126.570667),
-            level: 3
-        }
-        const bounds = new kakao.maps.LatLngBounds()
-        const kakaoMap = new kakao.maps.Map(container, options)
-
-        kakao.maps.event.addListener(kakaoMap, 'click', function (mouseEvent) {
-            if (prevMarker !== null) {
-                prevMarker.setMap(null)
-                console.log(prevMarker)
+    const addClickEvent = (map) => {
+        console.log(map)
+        kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
+            if (currMarker !== null) {
+                currMarker.setMap(null)
             }
             const latlng = mouseEvent.latLng
             setEventCreateInfo({
@@ -63,21 +62,43 @@ const GetLocation = ({ eventCreateInfo, setEventCreateInfo }) => {
             })
             setMessage(`lat: ${latlng.getLat()}, lng: ${latlng.getLng()}`)
             displayMarker(kakaoMap, new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()))
-            // 클릭한 위도, 경도 정보를 가져옵니다 
         })
+       
+        // 클릭한 위도, 경도 정보를 가져옵니다 
+    }
 
+    const initializeMap = (container) => {
+        const options = {
+            center: new kakao.maps.LatLng(33.450701, 126.570667),
+            level: 3
+        }
+        const kakaoMap = new kakao.maps.Map(container, options)
+        return kakaoMap
+    }
+
+    const markCurrPosition = (position, map) => {
+        console.log(position)
+        const lat = position.coords.latitude
+        const lng = position.coords.longitude
+        const locPosition = new kakao.maps.LatLng(lat, lng)
+
+        console.log(locPosition)
+        const bounds = new kakao.maps.LatLngBounds()
+        bounds.extend(locPosition)
+        map.setBounds(bounds)
+        setMessage(`Are you here? lat: ${lat}, lng: ${lng}`)
+        // const message = <div style={{ padding: '5px' }}>Are you here?</div>
+        displayMarker(map, locPosition)
+    }
+
+
+
+    useEffect(() => {
+        const container = document.getElementById('map')
+        const kakaoMap = initializeMap(container)
+        addClickEvent(kakaoMap)
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const lat = position.coords.latitude
-                const lng = position.coords.longitude
-                const locPosition = new kakao.maps.LatLng(lat, lng)
-                console.log(locPosition)
-                bounds.extend(locPosition)
-                kakaoMap.setBounds(bounds)
-                setMessage(`Are you here? lat: ${lat}, lng: ${lng}`)
-                // const message = <div style={{ padding: '5px' }}>Are you here?</div>
-                displayMarker(kakaoMap, locPosition)
-            })
+            navigator.geolocation.getCurrentPosition((position) => markCurrPosition(position, kakaoMap))
         } else {
             const locPosition = options.center
             // new kakao.maps.LatLng(33.450701, 126.570667)
@@ -92,7 +113,6 @@ const GetLocation = ({ eventCreateInfo, setEventCreateInfo }) => {
     return (
         <>
             <div id="map" style={{ width: '500px', height: '400px' }}></div>
-            {/* <div id="clickLatlng"></div> */}
             <div>
                 {message}
             </div>

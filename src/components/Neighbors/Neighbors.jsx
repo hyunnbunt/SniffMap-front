@@ -3,7 +3,10 @@ import { createContext, useState, useContext } from 'react'
 import FriendsMap from './FriendsMap'
 import NeighborsMap from './NeighborsMap'
 import WalkLocationRegistration from './WalkLocationRegistration'
+import './neighbors.css'
 import { AppContext } from '../../App'
+
+
 
 export const NeighborsContext = createContext()
 
@@ -21,28 +24,36 @@ const Neighbors = () => {
   }
 
   const drawLocationMarker = (location, dog, map) => {
-
     const markerInfo = {
       map: map,
       position: getKakaoLatLng(location),
       title: dog.name,
-      image: getMarkerInsideImg(dog.dogProfileImageURL)
+      image: getMarkerInsideImg(dog.dogProfileImageURL),
+      clickable: true
     }
     const marker = new kakao.maps.Marker(markerInfo)
     marker.setMap(map)
+    const infoWindow = getInfoWindow(markerInfo)
+    handleMarkerClick(map, marker, infoWindow)
     return markerInfo
   }
 
-  const showInfoWindow = (map, marker, markerInfo, dog) => {
+  const handleMarkerClick = (map, marker, infoWindow) => {
+    kakao.maps.event.addListener(marker, 'click', () => {
+      infoWindow.open(map, marker)
+    })
+  }
+
+  const getInfoWindow = (markerInfo) => {
     const iwPosition = markerInfo.position
     const greetingMsg = `Hello. I walk here!`
-    const iwContent = `<div style={{padding : '5px'}}>${greetingMsg}</div>`
+    const iwContent = `<div class='info-content' style={{padding : '5px'}}>${greetingMsg}</div>`
     const infoWindow = new kakao.maps.InfoWindow({
       position : iwPosition,
       content : iwContent
     })
     console.log(infoWindow)
-    infoWindow.open(map, marker)
+    return infoWindow
   }
 
   const getMarkerInsideImg = (src) => {

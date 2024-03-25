@@ -23,20 +23,7 @@ const Events = (props) => {
     })
     const [registeredEvntList, setRegisteredEvntList] = useState([])
 
-    useEffect(() => {
-        setRegisteredEvntList(values.getDog().participatingEvents)
-        console.log(registeredEvntList)
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                setEventCreateInfo({
-                    ...eventCreateInfo,
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                })
-            })
-        }
-    }, [])
-
+    
     const handleChangeDate = (e) => {
         console.log(e)
         setEventCreateInfo({
@@ -74,6 +61,21 @@ const Events = (props) => {
             values.updateUser(values.user.loginInfo)
         }
     }
+
+
+    useEffect(() => {
+        setRegisteredEvntList(values.getDog().participatingEvents)
+        console.log(registeredEvntList)
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                setEventCreateInfo({
+                    ...eventCreateInfo,
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                })
+            })
+        }
+    }, [])
 
     if (eventsMode === 'myEvents') {
         return (

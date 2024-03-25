@@ -6,8 +6,6 @@ import WalkLocationRegistration from './WalkLocationRegistration'
 import './neighbors.css'
 import { AppContext } from '../../App'
 
-
-
 export const NeighborsContext = createContext()
 
 const Neighbors = () => {

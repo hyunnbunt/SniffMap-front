@@ -6,7 +6,7 @@ const DogRegistration = () => {
 
     const values = useContext(AppContext)
 
-    const serverURL = 'http://localhost:8085'
+    const serverURL = values.serverURL
 
     const [registrationInput, setRegistrationInput] = useState({ 
         name: '', 

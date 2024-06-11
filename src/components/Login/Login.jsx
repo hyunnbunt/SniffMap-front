@@ -12,7 +12,7 @@ const Login = (props) => {
         password: '' 
     })
 
-    const serverURL = 'http://localhost:8085'
+    const serverURL = values.serverURL
 
     /* It runs when the login input changes. */
     const handleLoginInputChange = (e) => {

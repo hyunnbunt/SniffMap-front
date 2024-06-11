@@ -5,7 +5,7 @@ const SignUp = () => {
 
     const [signupInput, setSignupInput] = useState({email: '', password: '', username: ''})
     const values = useContext(AppContext)
-    const serverURL = 'http://localhost:8085'
+    const serverURL = values.serverURL
     const handleSignupInputChange = (e) => {
         setSignupInput({
             ...signupInput,

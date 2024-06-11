@@ -10,13 +10,15 @@ const Friends = () => {
 
     const values = useContext(AppContext)
     const dog = values.getDog()
-    console.log(dog)
+    console.log(dog.name)
     
     const removeFromFriendsList = async (friend) => {
+        console.log(values.tokenHeader)
         const res =
             await axios.patch(
                 `${values.serverURL}/dogs/${dog.id}/cancel-friend`,
-                { friendId: friend.id }
+                { friendId: friend.id },
+                values.tokenHeader
             )
         console.log(res)
         if (res.status === 200) {

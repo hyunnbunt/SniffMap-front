@@ -6,19 +6,17 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { AppContext } from '../../App'
 
 
-const DogsList = (props) => {
+const DogsList = () => {
 
     const appContext = useContext(AppContext)
     const [title, setTitle] = useState('choose one of your dogs')
-    const dogs = props.user.userData.dogs
-
-    console.log(props.user)
+    const dogs = appContext.user.userData.dogs
     console.log(dogs)
 
     const handleDogSelect = (eventKey) => {
         const myDog = dogs[eventKey]
-        props.setUser({
-            ...props.user,
+        appContext.setUser({
+            ...appContext.user,
             selectedDogId: myDog.id
         })
         setTitle(myDog.name)
@@ -27,11 +25,12 @@ const DogsList = (props) => {
     /* If the user selects a dog, present 'Friends' tab. */
     const handleClickSelect = (e) => {
         e.preventDefault()
-        props.setCurrentMode('Friends')
+        appContext.setCurrentMode('Friends')
     }
 
     /* If the user doesn't have any dog registered, present a dog registration form. */
-    if (props.user.userData.dogs === null) {
+    if (appContext.user.userData.dogs.length === 0) {
+        console.log("dogs list: 0")
         return (
             <DogRegistration />
         )
@@ -39,7 +38,7 @@ const DogsList = (props) => {
 
     return (
         <>
-            <h1>Hello, {props.user.userData.name}!</h1>
+            <h1>Hello, {appContext.user.userData.name}!</h1>
             <h2>Select one of your dogs.</h2>
             <div>
                 <form onSubmit={handleClickSelect}>

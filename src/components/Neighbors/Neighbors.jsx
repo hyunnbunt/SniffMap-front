@@ -10,8 +10,10 @@ export const NeighborsContext = createContext()
 
 const Neighbors = () => {
   const appContext = useContext(AppContext)
-  const myDog = appContext.getDog()
-  const [walkLocationEmpty, setWalkLocationEmpty] = useState(myDog.walkLocations[0].length === 0)
+
+  const [msg, setMsg] = useState('Loading user data...')
+
+  const [walkLocationEmpty, setWalkLocationEmpty] = useState(appContext.getDog().walkingLocationIds.length === 0)
 
   const drawMap = (container, centerPosition) => {
     const options = {
@@ -76,13 +78,28 @@ const Neighbors = () => {
   const getFirstWalkLocation = (dog) => {
     return dog.walkLocations[0]
   }
+  if (appContext.user.userData === null) {
+    console.log("llll")
+    console.log(appContext.user)
+    return (
+      <>{msg}</>
+    )
+  }
+  if (appContext.user.userData.dogs.length === 0) {
+    console.log("no dog friend")
+    return (
+      <>
+      <>Find your friend!</>
+      <NeighborsMap myDog={myDog} />
+            </>
 
+    )
+  }
   if (walkLocationEmpty) {
     return (
       <WalkLocationRegistration setWalkLocationEmpty={setWalkLocationEmpty} />
     )
   }
-
   return (
     <>
       <NeighborsContext.Provider value={{ drawMap, drawLocationMarker, getFirstWalkingDog, getFirstWalkLocation }}>

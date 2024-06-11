@@ -6,6 +6,8 @@ import Neighbors from './components/Neighbors/Neighbors'
 import Events from './components/Events/Events'
 import Friends from './components/Friends/Friends'
 import MyPage from './components/MyPage/MyPage'
+import SignUp from './components/SignUp'
+// import SigninRedirect from './components/SigninRedirect'
 
 export const AppContext = createContext()
 
@@ -13,6 +15,7 @@ const App = () => {
 
   /* Don't put component in state! */
   const [currentMode, setCurrentMode] = useState('Login')
+  console.log(currentMode)
   const [loginMsg, setLoginMsg] = useState('')
   const [user, setUser] = useState(
     {
@@ -22,7 +25,13 @@ const App = () => {
       loggedOut: false
     }
   )
-  const serverURL = 'http://localhost:8080'
+  const [token, setToken] = useState('')
+  const serverURL = 'http://localhost:8085'
+  const tokenHeader = {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  }
 
   /* It changes the currentMode string value when the button clicked. */
   const handleNavbarClicks = (n) => {
@@ -45,14 +54,13 @@ const App = () => {
   }
 
   const loginRequestToServer = async (loginInfo) => {
-    const loginURL = `${serverURL}/users/login`
+    const loginURL = `${serverURL}/auth/login`
     try {
       const res = await axios.post(loginURL, loginInfo)
       return res.data
     } catch (error) {
       throw new Error(error.response)
     }
-   
   }
 
   const loginError = () => {
@@ -69,6 +77,7 @@ const App = () => {
 
   const login = async (loginInput) => {
     const response = await loginRequestToServer(loginInput)
+    console.log(response);
     if (response !== null) {
       setUser({
         ...user,
@@ -80,17 +89,35 @@ const App = () => {
     }
   }
 
-  const updateUser = async () => {
-    const response = await loginRequestToServer(user.loginInfo)
-    if (response !== null) { 
-      updateUserData(response, user.loginInfo)
-      return true
-    } 
-    return false
+  const updateUser = async (token) => {
+    // const response = await loginRequestToServer(user.loginInfo)
+    const userInfoURL = `${serverURL}/my`
+    const response = await axios.get(userInfoURL, {
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    })
+    console.log("inside updateUser")
+    console.log(response)
+    // updateUserData(response)
+    setUser({
+      ...user,
+      userData: response.data
+    })
+    // console.log()
+    // if (response !== null) { 
+    //   updateUserData(response, user.loginInfo)
+    //   return true
+    // } 
+    // return false
   }
 
   const getDog = () => {
-    console.log(user)
+    console.log(user.selectedDogId)
+    if (user.userData === null) {
+      console.log("No user data registered.")
+      return
+    }
     return user.userData.dogs.find(dog=> dog.id === user.selectedDogId)
   }
 
@@ -122,14 +149,18 @@ const App = () => {
     page =
       <MyPage/>
   }
+  if (currentMode === 'SignUp') {
+    page = <SignUp/>
+  }
 
   return (
     <>
 
       <NavBar mode={mode} handleClicks={handleNavbarClicks} />
       <div>
-        <AppContext.Provider value={{ serverURL, user, serverURL, getDog, login, updateUserData, updateUser, setCurrentMode, setUser, requestLogin: loginRequestToServer }}>
+        <AppContext.Provider value={{ tokenHeader, setToken, token, user, serverURL, getDog, login, updateUserData, updateUser, setCurrentMode, setUser, requestLogin: loginRequestToServer }}>
           {page}
+          {/* <SigninRedirect/> */}
         </AppContext.Provider>
       </div>
 

@@ -3,6 +3,7 @@ import UserUpdate from './UserUpdate'
 import DogUpdate from './DogUpdate'
 import './img.css'
 import { AppContext } from '../../App'
+import DogRegistration from '../Login/DogRegistration'
 
 const MyPage = () => {
 
@@ -17,8 +18,8 @@ const MyPage = () => {
     const dog = values.getDog()
     console.log(user)
     console.log(dog)
-    const [userProfileImg, setUserProfileImg] = useState(user.profileImageURL)
-    const [dogProfileImg, setDogProfileImg] = useState(dog.dogProfileImageURL)
+    const [userProfileImg, setUserProfileImg] = useState(null)
+    const [dogProfileImg, setDogProfileImg] = useState(null)
 
     useEffect(() => {
         setMsg('')
@@ -53,12 +54,16 @@ const MyPage = () => {
                     <img className='radius' src={userProfileImg} />
                     <button onClick={() => setMyPageMode('user')}>update profile image</button>
                     <h2>{user.email}</h2>
-                    <h2>username : {user.name}</h2>
+                    <h2>username : {user.username}</h2>
                 </div>
                 <div>
                     <h2>{dog.name}</h2>
                     <img className='radius' src={dogProfileImg} />
                     <button onClick={() => setMyPageMode('dog')}>update your dog's profile image</button>
+                </div>
+                <div>
+                    Do you have another dog? register:
+                    <button onClick={() => setMyPageMode('dogRegistration')}>Register dogs</button>
                 </div>
                 <button onClick={handleClickLogOut}>Logout</button>
             </>
@@ -82,7 +87,8 @@ const MyPage = () => {
     }
     if (myPageMode === 'dog') {
         return (
-            <DogUpdate
+            <>
+                       <DogUpdate
                 user={values.user}
                 setUser={values.setUser}
                 updateUserData={values.updateUserData}
@@ -94,6 +100,13 @@ const MyPage = () => {
                 setCurrentMode={values.setCurrentMode}
                 setMsg={setMsg}
             />
+            </>
+ 
+        )
+    }
+    if (myPageMode === 'dogRegistration') {
+        return (
+            <DogRegistration />
         )
     }
 }

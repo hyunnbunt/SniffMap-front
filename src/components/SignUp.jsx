@@ -15,6 +15,7 @@ const SignUp = () => {
     
     const handleSignUpSubmit = async (e) => {
         e.preventDefault()
+        console.log(serverURL)
         const signupURL = `${serverURL}/auth/signup`
         console.log(signupInput);
         try {

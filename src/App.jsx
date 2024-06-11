@@ -26,7 +26,7 @@ const App = () => {
     }
   )
   const [token, setToken] = useState('')
-  const serverURL = 'http://43.203.243.231:8085'
+  const serverURL = 'http://ec2-43-203-243-231.ap-northeast-2.compute.amazonaws.com:8085'
   const tokenHeader = {
     headers: {
       "Authorization": "Bearer " + token

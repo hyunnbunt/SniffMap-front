@@ -26,7 +26,7 @@ const App = () => {
     }
   )
   const [token, setToken] = useState('')
-  const serverURL = 'http://localhost:8085'
+  const serverURL = 'http://43.203.243.231:8085'
   const tokenHeader = {
     headers: {
       "Authorization": "Bearer " + token

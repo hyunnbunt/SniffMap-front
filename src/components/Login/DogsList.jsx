@@ -10,8 +10,9 @@ const DogsList = () => {
 
     const appContext = useContext(AppContext)
     const [title, setTitle] = useState('choose one of your dogs')
+    console.log("inside dogs list")
     console.log(appContext.user)
-    const dogs = appContext.user.userData.dogs
+    const dogs = appContext.user.userData
     console.log(dogs)
 
     const handleDogSelect = (eventKey) => {

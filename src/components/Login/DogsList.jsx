@@ -10,6 +10,7 @@ const DogsList = () => {
 
     const appContext = useContext(AppContext)
     const [title, setTitle] = useState('choose one of your dogs')
+    console.log(appContext.user)
     const dogs = appContext.user.userData.dogs
     console.log(dogs)
 
